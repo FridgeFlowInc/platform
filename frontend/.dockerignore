@@ -38,3 +38,6 @@ dist
 # Template env files
 .env.template
 .env.docker.template
+
+# Env files
+.env
