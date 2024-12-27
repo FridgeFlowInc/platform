@@ -24,6 +24,14 @@ git clone https://github.com/FridgeFlowInc/platform.git
 cd platform/backend
 ```
 
+#### Customize enviroment
+
+```bash
+cp .env.template .env
+```
+
+And setup env vars according to your needs.
+
 #### Install dependencies
 
 ##### For dev enviroment
@@ -81,6 +89,14 @@ git clone https://github.com/FridgeFlowInc/platform.git
 ```bash
 cd platform/backend
 ```
+
+### Customize enviroment
+
+```bash
+cp .env.docker.template .env.docker
+```
+
+And setup env vars according to your needs.
 
 ### Build docker image
 

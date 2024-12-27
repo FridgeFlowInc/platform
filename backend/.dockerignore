@@ -125,7 +125,6 @@ celerybeat.pid
 
 # Environments
 .env
-.env.docker
 .venv
 env/
 venv/
@@ -169,3 +168,18 @@ cython_debug/
 
 # Ruff files
 .ruff_cache
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Git files
+.git
+.gitignore
+
+# Template env files
+.env.template
+.env.docker.template
+
+# Dev utility
+check.sh
