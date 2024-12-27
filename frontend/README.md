@@ -24,6 +24,14 @@ git clone https://github.com/FridgeFlowInc/platform.git
 cd platform/frontend
 ```
 
+#### Customize enviroment
+
+```bash
+cp .env.template .env
+```
+
+And setup env vars according to your needs.
+
 #### Install dependencies
 
 ##### For dev enviroment
@@ -74,6 +82,14 @@ git clone https://github.com/FridgeFlowInc/platform.git
 cd platform/frontend
 ```
 
+### Customize enviroment
+
+```bash
+cp .env.docker.template .env.docker
+```
+
+And setup env vars according to your needs.
+
 ### Build docker image
 
 ```bash
@@ -83,7 +99,7 @@ docker build -t fridgeflow-frontend .
 ### Run docker image
 
 ```bash
-docker run -p 5000:80 fridgeflow-frontend
+docker run -p 5000:80 --name fridgeflow-frontend fridgeflow-frontend
 ```
 
 Frontend will be available on localhost:5000
