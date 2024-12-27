@@ -3,23 +3,23 @@ import uuid
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
-from project.api.product import models, shemas
+from project.api.product import models, schemas
 
 router = Router(tags=["product"])
 
 
-@router.get("/", response=list[shemas.ProductResponse])
+@router.get("/", response=list[schemas.ProductResponse])
 def list_products(request):
     return models.Product.objects.all()
 
 
-@router.get("/{product_id}", response=shemas.ProductResponse)
+@router.get("/{product_id}", response=schemas.ProductResponse)
 def get_product(request, product_id: uuid.UUID):
     return get_object_or_404(models.Product, id=product_id)
 
 
-@router.post("/", response=shemas.ProductResponse)
-def create_product(request, product: shemas.ProductCreate):
+@router.post("/", response=schemas.ProductResponse)
+def create_product(request, product: schemas.ProductCreate):
     product = models.Product.objects.create(**product.dict())
     models.ProductLog.objects.create(
         product=product,
@@ -28,11 +28,11 @@ def create_product(request, product: shemas.ProductCreate):
     return product
 
 
-@router.put("/{product_id}", response=shemas.ProductResponse)
+@router.put("/{product_id}", response=schemas.ProductResponse)
 def update_product(
     request,
     product_id: uuid.UUID,
-    product: shemas.ProductCreate,
+    product: schemas.ProductCreate,
 ):
     product = get_object_or_404(models.Product, id=product_id)
     models.ProductLog.objects.create(
@@ -51,12 +51,12 @@ def delete_product(request, product_id: uuid.UUID):
     product.delete()
 
 
-@router.get("/log", response=list[shemas.ProductLogResponse])
+@router.get("/log", response=list[schemas.ProductLogResponse])
 def list_products_log(request):
     return models.ProductLog.objects.all()
 
 
-@router.get("/search", response=list[shemas.ProductResponse])
+@router.get("/search", response=list[schemas.ProductResponse])
 def product_search(
     request,
     name: str | None = None,
