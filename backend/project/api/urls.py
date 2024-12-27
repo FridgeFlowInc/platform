@@ -1,5 +1,7 @@
-from django.urls import include, path
+from django.urls import path
+
+import project.api.router
 
 urlpatterns = [
-    path("health/", include("project.api.health.urls")),
+    path("", project.api.router.api.urls),
 ]

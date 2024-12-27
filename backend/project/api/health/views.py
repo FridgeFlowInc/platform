@@ -1,12 +1,12 @@
-from ninja import NinjaAPI, Schema
+from ninja import Router, Schema
 
-api = NinjaAPI()
+router = Router(tags=["health"])
 
 
 class HealthResponse(Schema):
     status: str
 
 
-@api.get("/", response=HealthResponse)
+@router.get("/", response=HealthResponse)
 def add(request):
     return {"status": "ok"}
