@@ -29,7 +29,11 @@ def create_product(request, product: shemas.ProductCreate):
 
 
 @router.put("/{product_id}", response=shemas.ProductResponse)
-def update_product(request, product_id: uuid.UUID, product: models.Product):
+def update_product(
+    request,
+    product_id: uuid.UUID,
+    product: shemas.ProductCreate,
+):
     product = get_object_or_404(models.Product, id=product_id)
     models.ProductLog.objects.create(
         product=product,
@@ -38,6 +42,7 @@ def update_product(request, product_id: uuid.UUID, product: models.Product):
     for attr, value in product.dict().items():
         setattr(product, attr, value)
     product.save()
+    return product
 
 
 @router.delete("/{product_id}")
@@ -56,5 +61,4 @@ def product_search(
     request,
     name: str | None = None,
     categoty: str | None = None,
-):
-    ...
+): ...
