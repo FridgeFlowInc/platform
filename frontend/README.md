@@ -4,9 +4,9 @@
 
 Ensure you have the following installed on your system:
 
-- Node.js (v16 or higher)
-- npm
-- Docker (for containerized setup)
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [npm](https://www.npmjs.com/)
+- [Docker](https://www.docker.com/) (for containerized setup)
 
 ## Basic setup
 
