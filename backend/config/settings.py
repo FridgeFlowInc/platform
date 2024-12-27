@@ -15,7 +15,8 @@ SECRET_KEY = env("DEBUG", default="very_insecure_key")
 DEBUG = env("DEBUG", default=True)
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", list, default=["localhost", "127.0.0.1"])
-PASSWORD = env("PASSWORD")
+
+PASSWORD = env("PASSWORD", default="password")
 
 
 INSTALLED_APPS = [
