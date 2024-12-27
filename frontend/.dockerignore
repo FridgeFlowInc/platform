@@ -26,3 +26,15 @@ dist-ssr
 
 # Docker files
 Dockerfile
+.dockerignore
+
+# Git files
+.git
+.gitignore
+
+# Build folder
+dist
+
+# Template env files
+.env.template
+.env.docker.template
