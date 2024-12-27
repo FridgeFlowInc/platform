@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Internal apps
     "project.api.health",
+    "project.api.product",
 ]
 
 MIDDLEWARE = [
