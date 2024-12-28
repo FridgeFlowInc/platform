@@ -19,8 +19,8 @@ class Product(models.Model):
     total_gross_weight = models.FloatField()
     manufacture_date = models.DateField()
     expiration_date = models.DateField()
-    notes = models.TextField()
-    allergens = models.TextField()
+    notes = models.TextField(blank=True)
+    allergens = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
