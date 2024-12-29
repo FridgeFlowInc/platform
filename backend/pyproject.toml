@@ -10,12 +10,33 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.8.4",
-]
+dev = ["ruff>=0.8.4"]
 
 [tool.ruff]
-exclude = [".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out", "dist", "node_modules", "venv", "migrations"]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "dist",
+    "node_modules",
+    "venv",
+    ".vscode",
+    "migrations",
+]
 line-length = 79
 
 [tool.ruff.lint]
