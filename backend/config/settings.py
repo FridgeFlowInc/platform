@@ -10,7 +10,7 @@ env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
 
 
-SECRET_KEY = env("DEBUG", default="very_insecure_key")
+SECRET_KEY = env("SECRET_KEY", default="very_insecure_key")
 
 DEBUG = env("DEBUG", default=True)
 
