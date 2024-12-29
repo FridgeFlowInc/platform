@@ -21,27 +21,22 @@ def get_product(request, product_id: uuid.UUID):
 @router.post("/", response=schemas.ProductResponse)
 def create_product(request, product: schemas.ProductCreate):
     product = models.Product.objects.create(**product.dict())
-    models.ProductLog.objects.create(
-        product=product,
-        action_type="create",
-    )
+    models.ProductLog.objects.create(product=product, action_type="create")
+
     return product
 
 
 @router.put("/{product_id}", response=schemas.ProductResponse)
 def update_product(
-    request,
-    product_id: uuid.UUID,
-    product: schemas.ProductCreate,
+    request, product_id: uuid.UUID, product: schemas.ProductCreate
 ):
     product = get_object_or_404(models.Product, id=product_id)
-    models.ProductLog.objects.create(
-        product=product,
-        action_type="update",
-    )
+
+    models.ProductLog.objects.create(product=product, action_type="update")
     for attr, value in product.dict().items():
         setattr(product, attr, value)
     product.save()
+
     return product
 
 
@@ -50,15 +45,15 @@ def delete_product(request, product_id: uuid.UUID):
     product = get_object_or_404(models.Product, id=product_id)
     product.delete()
 
+    return {"success": True}
+
 
 @router.get("/log", response=list[schemas.ProductLogResponse])
-def list_products_log(request):
+def list_product_logs(request):
     return models.ProductLog.objects.all()
 
 
 @router.get("/search", response=list[schemas.ProductResponse])
 def product_search(
-    request,
-    name: str | None = None,
-    categoty: str | None = None,
+    request, name: str | None = None, category: str | None = None
 ): ...
