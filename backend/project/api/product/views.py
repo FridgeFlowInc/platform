@@ -15,8 +15,7 @@ def list_products(request):
 
 @router.post("/", response=schemas.ProductResponse)
 def create_product(request, product: schemas.ProductCreate):
-    product = models.Product.objects.create(**product.dict())
-    return product
+    return models.Product.objects.create(**product.dict())
 
 
 @router.get("/log", response=list[schemas.ProductLogResponse])
