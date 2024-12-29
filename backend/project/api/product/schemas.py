@@ -36,7 +36,7 @@ class ProductCreate(Schema):
 
 
 class ProductLogResponse(Schema):
-    product: uuid.UUID
+    product_id: uuid.UUID
     action_type: str
     description: str
     timestamp: datetime.datetime
