@@ -1,6 +1,8 @@
 import uuid
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Product(models.Model):
@@ -50,3 +52,18 @@ class ProductLog(models.Model):
 
     def __str__(self):
         return self.product.name
+
+
+@receiver(post_save, sender=Product)
+def create_log(sender, instance, created, **kwargs):
+    if created:
+        ProductLog.objects.create(
+            product=instance,
+            action_type="create",
+        )
+
+    else:
+        ProductLog.objects.create(
+            product=instance,
+            action_type="update",
+        )

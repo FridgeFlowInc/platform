@@ -16,10 +16,6 @@ def list_products(request):
 @router.post("/", response=schemas.ProductResponse)
 def create_product(request, product: schemas.ProductCreate):
     product = models.Product.objects.create(**product.dict())
-    models.ProductLog.objects.create(
-        product=product,
-        action_type="create",
-    )
     return product
 
 
@@ -47,15 +43,11 @@ def update_product(
     product_id: uuid.UUID,
     product: schemas.ProductCreate,
 ):
-    product = get_object_or_404(models.Product, id=product_id)
-    models.ProductLog.objects.create(
-        product=product,
-        action_type="update",
-    )
+    product_model = get_object_or_404(models.Product, id=product_id)
     for attr, value in product.dict().items():
-        setattr(product, attr, value)
-    product.save()
-    return product
+        setattr(product_model, attr, value)
+    product_model.save()
+    return product_model
 
 
 @router.delete("/{product_id}")
