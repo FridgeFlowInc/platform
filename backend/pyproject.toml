@@ -16,6 +16,7 @@ dev = [
 
 [tool.ruff]
 exclude = [".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out", "dist", "node_modules", "venv", "migrations"]
+line-length = 79
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -23,4 +24,11 @@ select = ["ALL"]
 ignore = ["D", "ANN", "ARG", "COM812", "ISC001"]
 
 [tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 79
+
+indent-style = "space"
+
 quote-style = "double"
+
+skip-magic-trailing-comma = false
