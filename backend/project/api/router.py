@@ -9,8 +9,11 @@ api = NinjaAPI(
     version="1",
     description="API docs for FridgeFlow project",
     csrf=True,
-    auth=project.api.auth.BearerAuth(),
 )
 
 api.add_router("/health/", project.api.health.views.router)
-api.add_router("/product/", project.api.product.views.router)
+api.add_router(
+    "/product/",
+    project.api.product.views.router,
+    auth=project.api.auth.BearerAuth(),
+)
