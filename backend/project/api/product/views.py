@@ -13,11 +13,6 @@ def list_products(request):
     return models.Product.objects.all()
 
 
-@router.get("/{product_id}", response=schemas.ProductResponse)
-def get_product(request, product_id: uuid.UUID):
-    return get_object_or_404(models.Product, id=product_id)
-
-
 @router.post("/", response=schemas.ProductResponse)
 def create_product(request, product: schemas.ProductCreate):
     product = models.Product.objects.create(**product.dict())
@@ -57,3 +52,27 @@ def list_product_logs(request):
 def product_search(
     request, name: str | None = None, category: str | None = None
 ): ...
+
+
+@router.get("/{product_id}", response=schemas.ProductResponse)
+def get_product(request, product_id: uuid.UUID):
+    return get_object_or_404(models.Product, id=product_id)
+
+
+@router.put("/{product_id}", response=schemas.ProductResponse)
+def update_product(
+    request,
+    product_id: uuid.UUID,
+    product: schemas.ProductCreate,
+):
+    product_model = get_object_or_404(models.Product, id=product_id)
+    for attr, value in product.dict().items():
+        setattr(product_model, attr, value)
+    product_model.save()
+    return product_model
+
+
+@router.delete("/{product_id}")
+def delete_product(request, product_id: uuid.UUID):
+    product = get_object_or_404(models.Product, id=product_id)
+    product.delete()
