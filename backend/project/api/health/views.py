@@ -10,7 +10,7 @@ class HealthResponse(Schema):
 @router.get(
     "/",
     response=HealthResponse,
-    summary="Get API endpoint health",
+    summary="Get API health",
     description="Returns 200 if server is ok.",
 )
 def index(request):
