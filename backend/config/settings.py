@@ -258,7 +258,6 @@ if NOTIFIER_TELEGRAM_BOT_TOKEN and NOTIFIER_TELEGRAM_CHAT_ID:
     }
     LOGGING_LOGGERS["django.request"]["handlers"].append("telegram")
     LOGGING_LOGGERS[LOGGER_NAME]["handlers"].append("telegram")
-    LOGGING_LOGGERS["root"]["handlers"].append("telegram")
 
 LOGGING = {
     "version": 1,
