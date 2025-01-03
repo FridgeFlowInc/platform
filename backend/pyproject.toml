@@ -7,6 +7,8 @@ dependencies = [
     "django-environ>=0.11.2",
     "django-ninja>=1.3.0",
     "gunicorn>=23.0.0",
+    "python-json-logger>=3.2.1",
+    "requests>=2.32.3",
 ]
 
 [dependency-groups]
@@ -53,3 +55,6 @@ indent-style = "space"
 quote-style = "double"
 
 skip-magic-trailing-comma = false
+
+[tool.ruff.lint.pylint]
+max-args = 6
