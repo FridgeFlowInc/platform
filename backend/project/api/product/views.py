@@ -1,6 +1,5 @@
 import uuid
 
-from django.core import exceptions
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
@@ -15,9 +14,7 @@ def list_product_logs(request):
 
 
 @router.post("/search", response=list[schemas.ProductResponse])
-def search_product(
-    request, query: str
-): ...
+def search_product(request, query: str): ...
 
 
 @router.get("/", response=list[schemas.ProductResponse])

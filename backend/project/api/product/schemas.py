@@ -1,6 +1,4 @@
-from dataclasses import Field
-import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from ninja import ModelSchema
 
@@ -19,7 +17,7 @@ class ProductCreate(ModelSchema):
     class Meta:
         model = models.Product
         fields = "__all__"
-        exclude = ["id"]
+        exclude = [models.Product.id.field.name]  # noqa: RUF012
 
 
 class ProductLogResponse(ModelSchema):
