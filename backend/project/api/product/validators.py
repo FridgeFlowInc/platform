@@ -17,6 +17,6 @@ class GrossWeightValidator:
 
 class ExpirationDateValidator:
     def __call__(self, instance):
-        if instance.expiration_date <= instance.manufacture_date:
+        if instance.expiration_date < instance.manufacture_date:
             err = "Expiration date must be later than manufacture date."
             raise ValidationError(err)
