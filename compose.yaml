@@ -1,0 +1,10 @@
+name: fridgeflow
+
+services:
+  backend:
+    build:
+      context: backend
+    ports:
+
+volumes:
+  backend_logs:

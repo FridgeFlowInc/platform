@@ -13,7 +13,7 @@ def list_product_logs(request):
     return models.ProductLog.objects.all()
 
 
-@router.post("/search", response=list[schemas.ProductResponse])
+@router.get("/search", response=list[schemas.ProductResponse])
 def search_product(request, query: str): ...
 
 
