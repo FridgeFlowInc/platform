@@ -99,7 +99,9 @@ def create_log_on_create_update(sender, instance, created, **kwargs):
         )
 
 
-@receiver(signals.post_delete, sender=Product)
+@receiver(
+    signals.pre_delete, sender=Product
+)  # TODO: dont delete logs when product deleted
 def create_log_on_delete(sender, instance, **kwargs):
     ProductLog.objects.create(
         product=instance,
