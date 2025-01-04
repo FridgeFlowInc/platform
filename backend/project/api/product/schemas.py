@@ -1,42 +1,30 @@
+from dataclasses import Field
 import datetime
-import uuid
+from uuid import UUID, uuid4
 
-from ninja import Schema
+from ninja import ModelSchema
 
-
-class ProductResponse(Schema):
-    id: uuid.UUID
-    name: str
-    category: str
-    manufacturer: str
-    quantity: float
-    unit: str
-    nutritional_value: float
-    total_net_weight: float
-    total_gross_weight: float
-    manufacture_date: datetime.date
-    expiration_date: datetime.date
-    notes: str
-    allergens: str
+from project.api.product import models
 
 
-class ProductCreate(Schema):
-    name: str
-    category: str
-    manufacturer: str
-    quantity: float
-    unit: str
-    nutritional_value: float
-    total_net_weight: float
-    total_gross_weight: float
-    manufacture_date: datetime.date
-    expiration_date: datetime.date
-    notes: str
-    allergens: str
+class ProductResponse(ModelSchema):
+    id: UUID
+
+    class Meta:
+        model = models.Product
+        fields = "__all__"
 
 
-class ProductLogResponse(Schema):
-    product_id: uuid.UUID
-    action_type: str
-    description: str
-    timestamp: datetime.datetime
+class ProductCreate(ModelSchema):
+    class Meta:
+        model = models.Product
+        fields = "__all__"
+        exclude = ["id"]
+
+
+class ProductLogResponse(ModelSchema):
+    id: UUID
+
+    class Meta:
+        model = models.ProductLog
+        fields = "__all__"

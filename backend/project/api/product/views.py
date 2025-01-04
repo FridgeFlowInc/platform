@@ -16,7 +16,7 @@ def list_product_logs(request):
 
 @router.post("/search", response=list[schemas.ProductResponse])
 def search_product(
-    request, name: str | None = None, category: str | None = None
+    request, query: str
 ): ...
 
 

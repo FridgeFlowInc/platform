@@ -1,8 +1,14 @@
 import uuid
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.core import validators
+from django.db.models import signals
 from django.dispatch import receiver
+
+from project.api.product.validators import (
+    GrossWeightValidator,
+    ExpirationDateValidator,
+)
 
 
 class Product(models.Model):
@@ -11,27 +17,57 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     category = models.CharField(max_length=200)
     manufacturer = models.CharField(max_length=200)
-    quantity = models.FloatField()
+    quantity = models.FloatField(
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(1000000),
+        ],
+    )
     unit = models.CharField(max_length=50)
-    nutritional_value = models.FloatField()
-    total_net_weight = models.FloatField()
-    total_gross_weight = models.FloatField()
+    nutritional_value = models.FloatField(  # in kcals
+        blank=True,
+        null=True,
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(1000000),
+        ],
+    )
+    total_net_weight = models.FloatField(  # in grams
+        blank=True,
+        null=True,
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(100000000),
+        ],
+    )
+    total_gross_weight = models.FloatField(  # in grams
+        blank=True,
+        null=True,
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(100000000),
+        ],
+    )
 
     manufacture_date = models.DateField()
     expiration_date = models.DateField()
 
-    notes = models.TextField(blank=True)
-    allergens = models.TextField(blank=True)
+    notes = models.TextField(blank=True, max_length=1000)
+    allergens = models.TextField(blank=True, max_length=1000)
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        GrossWeightValidator()(self)
+        ExpirationDateValidator()(self)
 
 
 class ProductLog(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="product_log"
+        Product, on_delete=models.CASCADE, related_name="logs"
     )
 
     action_type = models.TextField(
@@ -46,19 +82,26 @@ class ProductLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product.name
+        return f"{self.product.name} | {self.action_type}"
 
 
-@receiver(post_save, sender=Product)
-def create_log(sender, instance, created, **kwargs):
+@receiver(signals.post_save, sender=Product)
+def create_log_on_create_update(sender, instance, created, **kwargs):
     if created:
         ProductLog.objects.create(
             product=instance,
             action_type="create",
         )
-
     else:
         ProductLog.objects.create(
             product=instance,
             action_type="update",
         )
+
+
+@receiver(signals.post_delete, sender=Product)
+def create_log_on_delete(sender, instance, **kwargs):
+    ProductLog.objects.create(
+        product=instance,
+        action_type="delete",
+    )
