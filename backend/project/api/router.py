@@ -17,9 +17,9 @@ api = NinjaAPI(
 
 # Register application's routers
 
-api.add_router("/health/", project.api.health.views.router)
+api.add_router("/health", project.api.health.views.router)
 api.add_router(
-    "/product/",
+    "/product",
     project.api.product.views.router,
     auth=project.api.auth.BearerAuth(),
 )

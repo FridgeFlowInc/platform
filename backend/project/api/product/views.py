@@ -17,12 +17,12 @@ def list_product_logs(request):
 def search_product(request, query: str): ...
 
 
-@router.get("/", response=list[schemas.ProductResponse])
+@router.get("", response=list[schemas.ProductResponse])
 def list_products(request):
     return models.Product.objects.all()
 
 
-@router.post("/", response=schemas.ProductResponse)
+@router.post("", response=schemas.ProductResponse)
 def create_product(request, product: schemas.ProductCreate):
     product = models.Product(**product.dict())
     product.full_clean()
