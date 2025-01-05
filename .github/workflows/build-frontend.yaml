@@ -45,4 +45,5 @@ jobs:
 
     - name: Push image
       run: |
+        docker push ghcr.io/${{ env.REPO_NAME }}/frontend:latest
         docker push ghcr.io/${{ env.REPO_NAME }}/frontend:${{ github.sha }}
