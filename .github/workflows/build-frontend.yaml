@@ -33,9 +33,13 @@ jobs:
     
     - name: Remove comments and move .env.docker.template to .env.docker
       run: |
-          sed 's/#.*//' frontend/.env.docker.template > frontend/.env.docker
+        sed 's/#.*//' frontend/.env.docker.template > frontend/.env.docker
 
-    - name: Build and Push Frontend Image
+    - name: Build image
       run: |
-        docker build -t ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} ./frontend
-        docker push ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+        REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        docker build -t ghcr.io/$REPO_NAME/frontend:${{ github.sha }} ./frontend
+
+    - name: Push image
+      run: |
+        docker push ghcr.io/$REPO_NAME/frontend:${{ github.sha }} ./frontend

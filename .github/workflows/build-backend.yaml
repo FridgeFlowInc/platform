@@ -35,7 +35,11 @@ jobs:
       run: |
         sed 's/#.*//' backend/.env.docker.template > backend/.env.docker
 
-    - name: Build and Push Backend Image
+    - name: Build image
       run: |
-        docker build -t ghcr.io/${{ github.repository }}/backend:${{ github.sha }} ./backend
-        docker push ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+        REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        docker build -t ghcr.io/$REPO_NAME/backend:${{ github.sha }} ./backend
+
+    - name: Push image
+      run: |
+        docker push ghcr.io/$REPO_NAME/backend:${{ github.sha }} ./backend
