@@ -40,8 +40,11 @@ INSTALLED_APPS = [
     # Third-party apps
     "ninja",
     # Internal apps
-    "project.api.health",
-    "project.api.product",
+    "core.product",
+    "core.product.log",
+    # API v1 apps
+    "core.api.v1.health",
+    "core.api.v1.product",
 ]
 
 MIDDLEWARE = [

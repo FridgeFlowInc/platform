@@ -8,7 +8,7 @@ from config import handlers
 urlpatterns = [
     path("admin/", admin.site.urls),
     # API urls
-    path("api/", include("project.api.urls")),
+    path("api/", include("core.api.urls")),
 ]
 
 

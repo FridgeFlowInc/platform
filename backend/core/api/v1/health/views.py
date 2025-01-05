@@ -1,6 +1,6 @@
 from ninja import Router
 
-from project.api.health import schemas
+from core.api.v1.health import schemas
 
 router = Router(tags=["health"])
 
@@ -11,5 +11,5 @@ router = Router(tags=["health"])
     summary="Get API health",
     description="Returns 200 if server is ok.",
 )
-def index(request):
+def health_index(request):
     return {"status": "ok"}

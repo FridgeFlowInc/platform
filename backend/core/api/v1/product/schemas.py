@@ -2,27 +2,28 @@ from uuid import UUID
 
 from ninja import ModelSchema
 
-from project.api.product import models
+from core.product.log.models import ProductLog
+from core.product.models import Product
 
 
 class ProductOut(ModelSchema):
     id: UUID
 
     class Meta:
-        model = models.Product
+        model = Product
         fields = "__all__"
 
 
 class ProductIn(ModelSchema):
     class Meta:
-        model = models.Product
+        model = Product
         fields = "__all__"
-        exclude = [models.Product.id.field.name]  # noqa: RUF012
+        exclude = [Product.id.field.name]  # noqa: RUF012
 
 
 class ProductLogOut(ModelSchema):
     id: UUID
 
     class Meta:
-        model = models.ProductLog
+        model = ProductLog
         fields = "__all__"

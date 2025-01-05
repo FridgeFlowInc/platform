@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class HealthsConfig(AppConfig):
-    name = "project.api.health"
+    name = "core.api.v1.health"
+    label = "api_v1_health"
