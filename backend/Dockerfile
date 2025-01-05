@@ -36,8 +36,13 @@ COPY . .
 # Copy docker env file
 COPY ./.env.docker ./.env
 
-# Run as non-root user
+# Create app user
 RUN adduser -D -g '' app
+
+# Create logs directory and set permissions
+RUN mkdir -p ./logs && chown -R app:app ./logs
+
+# Run as non-root user
 USER app
 
 # Setup env vars
