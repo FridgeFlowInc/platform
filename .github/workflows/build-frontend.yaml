@@ -42,4 +42,4 @@ jobs:
 
     - name: Push image
       run: |
-        docker push ghcr.io/$REPO_NAME/frontend:${{ github.sha }} ./frontend
+        docker push ghcr.io/$REPO_NAME/frontend:${{ github.sha }}
