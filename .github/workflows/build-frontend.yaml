@@ -41,6 +41,7 @@ jobs:
 
     - name: Build image
       run: |
+        docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:latest ./frontend
         docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:${{ github.sha }} ./frontend
 
     - name: Push image
