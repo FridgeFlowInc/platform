@@ -5,7 +5,7 @@ from ninja import ModelSchema
 from project.api.product import models
 
 
-class ProductResponse(ModelSchema):
+class ProductOut(ModelSchema):
     id: UUID
 
     class Meta:
@@ -13,14 +13,14 @@ class ProductResponse(ModelSchema):
         fields = "__all__"
 
 
-class ProductCreate(ModelSchema):
+class ProductIn(ModelSchema):
     class Meta:
         model = models.Product
         fields = "__all__"
         exclude = [models.Product.id.field.name]  # noqa: RUF012
 
 
-class ProductLogResponse(ModelSchema):
+class ProductLogOut(ModelSchema):
     id: UUID
 
     class Meta:

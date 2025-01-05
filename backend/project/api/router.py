@@ -11,6 +11,7 @@ api = NinjaAPI(
     title="FridgeFlow API",
     version="1",
     description="API docs for FridgeFlow project",
+    openapi_url="/docs/openapi.json",
     csrf=True,
 )
 

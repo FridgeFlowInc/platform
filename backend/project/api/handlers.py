@@ -6,10 +6,23 @@ import django.core.exceptions
 logger = logging.getLogger("django")
 
 
-def handle_django_validation_error(request, exc, api):
+def handle_not_found_error(request, exc, api):
     return api.create_response(
         request,
-        {"detail": str(exc)},  # TODO: properly output
+        {"detail": status.NOT_FOUND.phrase},
+        status=status.NOT_FOUND,
+    )
+
+
+def handle_django_validation_error(request, exc, api):
+    detail = list(exc)
+
+    if hasattr(exc, "error_dict"):
+        detail = dict(exc)
+
+    return api.create_response(
+        request,
+        {"detail": {"fields": detail}},
         status=status.UNPROCESSABLE_ENTITY,
     )
 
