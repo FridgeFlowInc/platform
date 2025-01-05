@@ -1,15 +1,13 @@
-from ninja import Router, Schema
+from ninja import Router
+
+from project.api.health import schemas
 
 router = Router(tags=["health"])
 
 
-class HealthResponse(Schema):
-    status: str = "ok"
-
-
 @router.get(
     "",
-    response=HealthResponse,
+    response=schemas.HealthOut,
     summary="Get API health",
     description="Returns 200 if server is ok.",
 )
