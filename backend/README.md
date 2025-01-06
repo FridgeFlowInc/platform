@@ -92,11 +92,7 @@ cd platform/backend
 
 ### Customize enviroment
 
-```bash
-cp .env.docker.template .env.docker
-```
-
-And setup env vars according to your needs.
+Customize enviroment with `docker run` command (or bind .env file to container), for all enviroment vars and default values see [.env.template](/backend/.env.template)
 
 ### Build docker image
 
@@ -111,7 +107,3 @@ docker run -p 8080:8080 --name fridgeflow-backend fridgeflow-backend
 ```
 
 Backend will be available on localhost:8080
-
-### Notes
-
-Image from public registry uses [.env.docker.template](/backend/.env.docker.template) as default env vars, if you want to provide custom just override them when using `docker run` command.

@@ -30,11 +30,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Remove comments and move .env.docker.template to .env.docker
-      run: |
-        sed 's/#.*//' backend/.env.docker.template > backend/.env.docker
-    
+
     - name: Set REPO_NAME to lowercase
       run: |
         echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV

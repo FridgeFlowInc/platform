@@ -33,17 +33,11 @@ COPY --from=builder /opt/venv /opt/venv
 # Copy application code
 COPY . .
 
-# Copy docker env file
-COPY ./.env.docker ./.env
-
 # Create app user
 RUN adduser -D -g '' app
 
-# Create logs directory and set permissions
-RUN mkdir -p ./logs && chown -R app:app ./logs
-
-# Create healthcheck dir and set permissions
-RUN mkdir -p ./health_check_storage_test && chown -R app:app ./health_check_storage_test
+# Chown of app folder
+RUN chown -R app:app ./
 
 # Run as non-root user
 USER app

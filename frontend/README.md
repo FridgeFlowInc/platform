@@ -84,11 +84,7 @@ cd platform/frontend
 
 ### Customize enviroment
 
-```bash
-cp .env.docker.template .env.docker
-```
-
-And setup env vars according to your needs.
+Customize enviroment with `docker run` command (or bind .env file to container), for all enviroment vars see [.env.template](/frontend/.env.template)
 
 ### Build docker image
 
@@ -103,7 +99,3 @@ docker run -p 5000:80 --name fridgeflow-frontend fridgeflow-frontend
 ```
 
 Frontend will be available on localhost:5000
-
-### Notes
-
-Image from public registry uses [.env.docker.template](/frontend/.env.docker.template) as default env vars, if you want to provide custom just override them when using `docker run` command.
