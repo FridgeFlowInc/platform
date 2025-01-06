@@ -111,3 +111,7 @@ docker run -p 8080:8080 --name fridgeflow-backend fridgeflow-backend
 ```
 
 Backend will be available on localhost:8080
+
+### Notes
+
+Image from public registry uses [.env.docker.template](/backend/.env.docker.template) as default env vars, if you want to provide custom just override them when using `docker run` command.

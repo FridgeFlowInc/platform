@@ -103,3 +103,7 @@ docker run -p 5000:80 --name fridgeflow-frontend fridgeflow-frontend
 ```
 
 Frontend will be available on localhost:5000
+
+### Notes
+
+Image from public registry uses [.env.docker.template](/frontend/.env.docker.template) as default env vars, if you want to provide custom just override them when using `docker run` command.
