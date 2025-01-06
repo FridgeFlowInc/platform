@@ -16,9 +16,6 @@ RUN npm install && npm cache clean --force
 # Copy the application code
 COPY . .
 
-# Copy docker env file
-COPY ./.env.docker ./.env
-
 # Build the application
 RUN npm run build
 
