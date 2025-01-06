@@ -4,7 +4,9 @@ on: [ push, pull_request ]
 
 jobs:
   ruff:
+    name: Run Ruff Linter
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
