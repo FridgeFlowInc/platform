@@ -18,7 +18,11 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default="very_insecure_key")
 
 DEBUG = env("DJANGO_DEBUG", default=True)
 
-ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS", list, default=["localhost", "127.0.0.1"])
+ALLOWED_HOSTS = env(
+    "DJANGO_ALLOWED_HOSTS",
+    list,
+    default=["localhost", "127.0.0.1"],
+)
 
 CSRF_TRUSTED_ORIGINS = env(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
@@ -26,7 +30,11 @@ CSRF_TRUSTED_ORIGINS = env(
     default=["http://localhost", "http://127.0.0.1"],
 )
 
-INTERNAL_IPS = env("DJANGO_INTERNAL_IPS", list, default=["localhost", "127.0.0.1"])
+INTERNAL_IPS = env(
+    "DJANGO_INTERNAL_IPS",
+    list,
+    default=["localhost", "127.0.0.1"],
+)
 
 FRIDGE_PANEL_PASSWORD = env("DJANGO_FRIDGE_PANEL_PASSWORD", default="password")
 
@@ -158,11 +166,17 @@ DATA_UPLOAD_MAX_NUMBER_FILES = None
 
 # Telegram
 
-NOTIFIER_TELEGRAM_BOT_TOKEN = env("DJANGO_NOTIFIER_TELEGRAM_BOT_TOKEN", default=None)
+NOTIFIER_TELEGRAM_BOT_TOKEN = env(
+    "DJANGO_NOTIFIER_TELEGRAM_BOT_TOKEN", default=None
+)
 
-NOTIFIER_TELEGRAM_CHAT_ID = env("DJANGO_NOTIFIER_TELEGRAM_CHAT_ID", default=None)
+NOTIFIER_TELEGRAM_CHAT_ID = env(
+    "DJANGO_NOTIFIER_TELEGRAM_CHAT_ID", default=None
+)
 
-NOTIFIER_TELEGRAM_THREAD_ID = env("DJANGO_NOTIFIER_TELEGRAM_THREAD_ID", default=None)
+NOTIFIER_TELEGRAM_THREAD_ID = env(
+    "DJANGO_NOTIFIER_TELEGRAM_THREAD_ID", default=None
+)
 
 
 # Logging settings
@@ -185,9 +199,7 @@ LOGGING_FILTERS = {
 LOGGING_FORMATTERS = {
     "json": {
         "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-        "format": (
-            "{levelname}{asctime}{name}{pathname}{lineno}{message}"
-        ),
+        "format": ("{levelname}{asctime}{name}{pathname}{lineno}{message}"),
         "style": "{",
     },
     "text": {
