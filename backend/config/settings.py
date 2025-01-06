@@ -12,21 +12,23 @@ env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
 
 
-SECRET_KEY = env("SECRET_KEY", default="very_insecure_key")
+# Common settings
 
-DEBUG = env("DEBUG", default=True)
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="very_insecure_key")
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", list, default=["localhost", "127.0.0.1"])
+DEBUG = env("DJANGO_DEBUG", default=True)
+
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS", list, default=["localhost", "127.0.0.1"])
 
 CSRF_TRUSTED_ORIGINS = env(
-    "CSRF_TRUSTED_ORIGINS",
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
     list,
     default=["http://localhost", "http://127.0.0.1"],
 )
 
-INTERNAL_IPS = env("INTERNAL_IPS", list, default=["localhost", "127.0.0.1"])
+INTERNAL_IPS = env("DJANGO_INTERNAL_IPS", list, default=["localhost", "127.0.0.1"])
 
-PASSWORD = env("PASSWORD", default="password")
+FRIDGE_PANEL_PASSWORD = env("DJANGO_FRIDGE_PANEL_PASSWORD", default="password")
 
 
 INSTALLED_APPS = [
@@ -84,7 +86,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 
-DB_URI = env.db_url("DB_URI", default="sqlite:///db.sqlite3")
+DB_URI = env.db_url("DJANGO_DB_URI", default="sqlite:///db.sqlite3")
 
 DATABASES = {"default": DB_URI}
 
@@ -118,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = env("LANGUAGE_CODE", default="en-us")
+LANGUAGE_CODE = env("DJANGO_LANGUAGE_CODE", default="en-us")
 
 LANGUAGES = [("en", _("English")), ("ru", _("Russian"))]
 
@@ -135,7 +137,7 @@ FIRST_DAY_OF_WEEK = 1
 
 STATIC_ROOT = BASE_DIR / "static"
 
-STATIC_URL = env("STATIC_URL", default="static/")
+STATIC_URL = env("DJANGO_STATIC_URL", default="static/")
 
 
 # Default primary key field type
@@ -156,11 +158,11 @@ DATA_UPLOAD_MAX_NUMBER_FILES = None
 
 # Telegram
 
-NOTIFIER_TELEGRAM_BOT_TOKEN = env("NOTIFIER_TELEGRAM_BOT_TOKEN", default=None)
+NOTIFIER_TELEGRAM_BOT_TOKEN = env("DJANGO_NOTIFIER_TELEGRAM_BOT_TOKEN", default=None)
 
-NOTIFIER_TELEGRAM_CHAT_ID = env("NOTIFIER_TELEGRAM_CHAT_ID", default=None)
+NOTIFIER_TELEGRAM_CHAT_ID = env("DJANGO_NOTIFIER_TELEGRAM_CHAT_ID", default=None)
 
-NOTIFIER_TELEGRAM_THREAD_ID = env("NOTIFIER_TELEGRAM_THREAD_ID", default=None)
+NOTIFIER_TELEGRAM_THREAD_ID = env("DJANGO_NOTIFIER_TELEGRAM_THREAD_ID", default=None)
 
 
 # Logging settings
@@ -184,13 +186,24 @@ LOGGING_FORMATTERS = {
     "json": {
         "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
         "format": (
-            "%(levelname)s%(asctime)s%(name)s%(pathname)s%(lineno)s%(message)s"
+            "{levelname}{asctime}{name}{pathname}{lineno}{message}"
         ),
+        "style": "{",
     },
     "text": {
+        "()": "colorlog.ColoredFormatter",
         "format": (
-            "[{levelname}] {asctime} {name} | {pathname}:{lineno} | {message}"
+            "{log_color}[{levelname}]{reset} "
+            "{light_black}{asctime} {name} | {pathname}:{lineno}{reset}\n"
+            "{bold_black}{message}{reset}"
         ),
+        "log_colors": {
+            "DEBUG": "bold_green",
+            "INFO": "bold_cyan",
+            "WARNING": "bold_yellow",
+            "ERROR": "bold_red",
+            "CRITICAL": "bold_purple",
+        },
         "style": "{",
     },
 }
@@ -241,6 +254,11 @@ LOGGING_LOGGERS = {
         "level": "DEBUG",
         "propagate": False,
     },
+    "health-check": {
+        "handlers": ["console", "rotating_file"],
+        "level": "INFO" if DEBUG else "ERROR",
+        "propagate": False,
+    },
     LOGGER_NAME: {
         "handlers": ["console", "rotating_file"],
         "level": "DEBUG" if DEBUG else "INFO",
@@ -266,6 +284,7 @@ if NOTIFIER_TELEGRAM_BOT_TOKEN and NOTIFIER_TELEGRAM_CHAT_ID:
         "timeout": 5,
     }
     LOGGING_LOGGERS["django.request"]["handlers"].append("telegram")
+    LOGGING_LOGGERS["health-check"]["handlers"].append("telegram")
     LOGGING_LOGGERS[LOGGER_NAME]["handlers"].append("telegram")
 
 LOGGING = {
