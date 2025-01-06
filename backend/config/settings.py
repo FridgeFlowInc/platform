@@ -275,3 +275,12 @@ LOGGING = {
 # Security
 
 SECURE_REFERRER_POLICY = "unsafe-url"
+
+
+# debug-toolbar settings
+
+DEBUG_TOOLBAR_CONFIG = {"SHOW_COLLAPSED": True, "UPDATE_ON_FETCH": True}
+
+if DEBUG:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
