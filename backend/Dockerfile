@@ -42,6 +42,9 @@ RUN adduser -D -g '' app
 # Create logs directory and set permissions
 RUN mkdir -p ./logs && chown -R app:app ./logs
 
+# Create healthcheck dir and set permissions
+RUN mkdir -p ./health_check_storage_test && chown -R app:app ./health_check_storage_test
+
 # Run as non-root user
 USER app
 
@@ -56,7 +59,7 @@ EXPOSE 8080
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:8080/api/health/ || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:8080/health/?format=json || exit 1
 
 # Start gunicorn
 CMD ["gunicorn", "config.wsgi", "-b", "0.0.0.0:8080"]

@@ -1,17 +1,27 @@
 """URL configuration for frigeflow-backend."""
 
-from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
 from config import handlers
 
 urlpatterns = [
+    # Admin urls
     path("admin/", admin.site.urls),
+    # Health urls
+    path("health/", include("health_check.urls")),
     # API urls
     path("api/", include("core.api.urls")),
-    *debug_toolbar_urls(),
 ]
+
+
+# Add debug-toolbar urls
+
+if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()
 
 
 # Register custom error handlers
