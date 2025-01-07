@@ -14,10 +14,9 @@ class ActionChoices(models.Choices):
 class ProductLog(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    product = models.ForeignKey(
-        Product, on_delete=models.SET_NULL, related_name="logs", null=True
-    )
+    product_id = models.UUIDField(null=True)
     action_type = models.CharField(max_length=1, choices=ActionChoices)
+    quantity_change = models.FloatField()
     description = models.TextField(blank=True)
 
     timestamp = models.DateTimeField(auto_now_add=True)
