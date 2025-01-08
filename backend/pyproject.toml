@@ -49,7 +49,6 @@ line-length = 79
 
 [tool.ruff.lint]
 select = ["ALL"]
-
 ignore = ["D", "ANN", "ARG", "COM812", "ISC001"]
 
 [tool.ruff.format]
@@ -57,9 +56,7 @@ docstring-code-format = true
 docstring-code-line-length = 79
 
 indent-style = "space"
-
 quote-style = "double"
-
 skip-magic-trailing-comma = false
 
 [tool.ruff.lint.pylint]
