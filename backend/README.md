@@ -50,13 +50,13 @@ uv sync --no-dev
 
 ##### In dev mode
 
-###### Apply migrations
+Apply migrations:
 
 ```bash
 uv run python manage.py migrate
 ```
 
-###### Start project
+Start project:
 
 ```bash
 uv run python manage.py runserver
@@ -64,13 +64,13 @@ uv run python manage.py runserver
 
 ##### In prod mode
 
-###### Apply migrations
+Apply migrations:
 
 ```bash
 uv run python manage.py migrate
 ```
 
-###### Start project
+Start project:
 
 ```bash
 uv run gunicorn config.wsgi
@@ -90,15 +90,15 @@ git clone https://github.com/FridgeFlowInc/platform.git
 cd platform/backend
 ```
 
-### Customize enviroment
-
-Customize enviroment with `docker run` command (or bind .env file to container), for all enviroment vars and default values see [.env.template](/backend/.env.template)
-
 ### Build docker image
 
 ```bash
 docker build -t fridgeflow-backend .
 ```
+
+### Customize enviroment
+
+Customize enviroment with `docker run` command (or bind .env file to container), for all enviroment vars and default values see [.env.template](/backend/.env.template).
 
 ### Run docker image
 
@@ -106,4 +106,8 @@ docker build -t fridgeflow-backend .
 docker run -p 8080:8080 --name fridgeflow-backend fridgeflow-backend
 ```
 
-Backend will be available on localhost:8080
+Backend will be available on localhost:8080.
+
+### Notes
+
+You can use [image](https://github.com/FridgeFlowInc/platform/pkgs/container/platform%2Fbackend) from github registry.
