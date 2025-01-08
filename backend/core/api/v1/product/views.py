@@ -1,6 +1,6 @@
+import datetime
 import uuid
 from collections import defaultdict
-import datetime
 from http import HTTPStatus as status  # noqa: N813
 
 from django.shortcuts import get_object_or_404
@@ -8,7 +8,6 @@ from ninja import Router
 
 from core.api.v1.product import schemas
 from core.product.log.models import ProductLog
-from core.product.log.models import ActionChoices
 from core.product.models import Product
 
 router = Router(tags=["product"])
@@ -34,9 +33,9 @@ def create_product(request, product: schemas.ProductIn):
     product.full_clean()
     product.save()
     ProductLog.objects.create(
-        product_id = product.id,
-        quantity_change = product.quantity,
-        action_type = "C",
+        product_id=product.id,
+        quantity_change=product.quantity,
+        action_type="C",
     )
 
     return status.CREATED, product
@@ -55,9 +54,9 @@ def update_product(
 ):
     product_obj = get_object_or_404(Product, id=product_id)
     ProductLog.objects.create(
-        product_id = product_id,
-        quantity_change = product.quantity - product_obj.quantity,
-        action_type = "U",
+        product_id=product_id,
+        quantity_change=product.quantity - product_obj.quantity,
+        action_type="U",
     )
     for attr, value in product.dict().items():
         setattr(product_obj, attr, value)
@@ -71,28 +70,34 @@ def delete_product(request, product_id: uuid.UUID):
     product = get_object_or_404(Product, id=product_id)
     ProductLog.objects.create(
         product_id=product_id,
-        quantity_change= -(product.quantity),
+        quantity_change=-(product.quantity),
         action_type="D",
     )
     product.delete()
 
-@router.get("/{product_id}/stats", response = schemas.ProductStatsResponse)
-def get_product_stats(request, product_id: uuid.UUID, 
-                      date_after: datetime.date, date_before: datetime.date):
-    entries = ProductLog.objects.filter(product_id = product_id).filter(timestamp__date__range=(date_after, date_before))
+
+@router.get("/{product_id}/stats", response=schemas.ProductStatsResponse)
+def get_product_stats(
+    request,
+    product_id: uuid.UUID,
+    date_after: datetime.date,
+    date_before: datetime.date,
+):
+    entries = ProductLog.objects.filter(product_id=product_id).filter(
+        timestamp__date__range=(date_after, date_before)
+    )
     daily_change = defaultdict(float)
     for entry in entries:
         day = entry.timestamp.date()
         daily_change[day] += entry.quantity_change
-    daily_changes = []
-    for day in daily_change:
-        daily_changes.append(
-            schemas.DailyChange(
-                date = day,
-                quantity_change_for_date = daily_change[day]
-            )
+
+    daily_changes = [
+        schemas.DailyChange(
+            date=day, quantity_change_for_date=daily_change[day]
         )
+        for day in daily_change
+    ]
+
     return schemas.ProductStatsResponse(
-            product_id = product_id,
-            quantity_changes = daily_changes
+        product_id=product_id, quantity_changes=daily_changes
     )

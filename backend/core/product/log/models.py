@@ -2,8 +2,6 @@ import uuid
 
 from django.db import models
 
-from core.product.models import Product
-
 
 class ActionChoices(models.Choices):
     create = "C"
