@@ -177,9 +177,8 @@ Dockerfile
 .git
 .gitignore
 
-# Template env files
+# Template env file
 .env.template
-.env.docker.template
 
 # Dev utility
 check.sh
