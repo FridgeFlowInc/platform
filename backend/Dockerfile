@@ -1,8 +1,8 @@
 # Stage 1: Install dependencies
-FROM python:3.11-alpine3.20 AS builder
+FROM docker.io/python:3.11-alpine3.20 AS builder
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.4.30 /uv /uvx /bin/
+COPY --from=docker.io/ghcr.io/astral-sh/uv:python3.11-alpine /uv /uvx /bin/
 
 # Set the working directory
 WORKDIR /app
@@ -14,7 +14,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_PROJECT_ENVIRONMENT=/opt/venv
 
-# Copy project files
+# Copy pyproject.toml file
 COPY pyproject.toml .
 
 # Install dependencies
@@ -22,7 +22,7 @@ RUN uv sync --no-dev --no-install-project --no-cache
 
 
 # Stage 2: Serve the application
-FROM python:3.11-alpine3.20
+FROM docker.io/python:3.11-alpine3.20
 
 # Set the working directory
 WORKDIR /app
@@ -33,11 +33,8 @@ COPY --from=builder /opt/venv /opt/venv
 # Copy application code
 COPY . .
 
-# Create app user
-RUN adduser -D -g '' app
-
-# Chown of app folder
-RUN chown -R app:app ./
+# Create app user and set permissions
+RUN adduser -D -g '' app && chown -R app:app ./
 
 # Run as non-root user
 USER app
