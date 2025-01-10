@@ -2,7 +2,7 @@
 FROM docker.io/python:3.11-alpine3.20 AS builder
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:python3.11-alpine /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.5-python3.11-alpine /uv /uvx /bin/
 
 # Set the working directory
 WORKDIR /app
