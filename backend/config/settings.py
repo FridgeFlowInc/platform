@@ -14,8 +14,6 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 # Common settings
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="very_insecure_key")
-
 DEBUG = env("DJANGO_DEBUG", default=True)
 
 ALLOWED_HOSTS = env(
@@ -24,79 +22,16 @@ ALLOWED_HOSTS = env(
     default=["localhost", "127.0.0.1"],
 )
 
-CSRF_TRUSTED_ORIGINS = env(
-    "DJANGO_CSRF_TRUSTED_ORIGINS",
-    list,
-    default=["http://localhost", "http://127.0.0.1"],
-)
-
-INTERNAL_IPS = env(
-    "DJANGO_INTERNAL_IPS",
-    list,
-    default=["localhost", "127.0.0.1"],
-)
-
 FRIDGE_PANEL_PASSWORD = env("DJANGO_FRIDGE_PANEL_PASSWORD", default="password")
-
-
-INSTALLED_APPS = [
-    # Build-in apps
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Healthcheck
-    "health_check",
-    "health_check.db",
-    "health_check.cache",
-    "health_check.storage",
-    "health_check.contrib.migrations",
-    # Third-party apps
-    "ninja",
-    # Internal apps
-    "core.product",
-    "core.product.log",
-    # API v1 apps
-    "core.api.v1.health",
-    "core.api.v1.product",
-]
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-]
-
-ROOT_URLCONF = "config.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ]
-        },
-    }
-]
-
-WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
 
 DB_URI = env.db_url("DJANGO_DB_URI", default="sqlite:///db.sqlite3")
 
-DATABASES = {"default": DB_URI}
+DATABASES = {"default": {**DB_URI, "CONN_MAX_AGE": 50}}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Password validation
@@ -126,40 +61,150 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-
-LANGUAGE_CODE = env("DJANGO_LANGUAGE_CODE", default="en-us")
-
-LANGUAGES = [("en", _("English")), ("ru", _("Russian"))]
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-FIRST_DAY_OF_WEEK = 1
-
-
 # Static files (CSS, JavaScript, Images)
 
 STATIC_ROOT = BASE_DIR / "static"
 
 STATIC_URL = env("DJANGO_STATIC_URL", default="static/")
 
+STATICFILES_DIRS = []
 
-# Default primary key field type
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
 
-# Limits
+# Files
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440
+
+
+# Cors settings
+
+CORS_ALLOWED_ORIGINS_FROM_ENV = env("DJANGO_CORS_ALLOWED_ORIGINS", list, ["*"])
+
+if CORS_ALLOWED_ORIGINS_FROM_ENV == ["*"]:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_FROM_ENV
+
+
+# Forms
+
+FORM_RENDERER = "django.forms.renderers.DjangoTemplates"
+
+FORMS_URLFIELD_ASSUME_HTTPS = False
+
+
+# Internationalization
+
+DATE_FORMAT = "N j, Y"
+
+DATE_INPUT_FORMATS = [
+    "%Y-%m-%d",  # '2006-10-25'
+    "%m/%d/%Y",  # '10/25/2006'
+    "%m/%d/%y",  # '10/25/06'
+    "%b %d %Y",  # 'Oct 25 2006'
+    "%b %d, %Y",  # 'Oct 25, 2006'
+    "%d %b %Y",  # '25 Oct 2006'
+    "%d %b, %Y",  # '25 Oct, 2006'
+    "%B %d %Y",  # 'October 25 2006'
+    "%B %d, %Y",  # 'October 25, 2006'
+    "%d %B %Y",  # '25 October 2006'
+    "%d %B, %Y",  # '25 October, 2006'
+]
+
+DATETIME_FORMAT = "N j, Y, H:i:s"
+
+DATETIME_INPUT_FORMATS = [
+    "%Y-%m-%d %H:%M:%S",  # '2006-10-25 14:30:59'
+    "%Y-%m-%d %H:%M:%S.%f",  # '2006-10-25 14:30:59.000200'
+    "%Y-%m-%d %H:%M",  # '2006-10-25 14:30'
+    "%m/%d/%Y %H:%M:%S",  # '10/25/2006 14:30:59'
+    "%m/%d/%Y %H:%M:%S.%f",  # '10/25/2006 14:30:59.000200'
+    "%m/%d/%Y %H:%M",  # '10/25/2006 14:30'
+    "%m/%d/%y %H:%M:%S",  # '10/25/06 14:30:59'
+    "%m/%d/%y %H:%M:%S.%f",  # '10/25/06 14:30:59.000200'
+    "%m/%d/%y %H:%M",  # '10/25/06 14:30'
+]
+
+DECIMAL_SEPARATOR = "."
+
+FIRST_DAY_OF_WEEK = 1
+
+FORMAT_MODULE_PATH = None
+
+LANGUAGE_CODE = env("DJANGO_LANGUAGE_CODE", default="en-us")
+
+LANGUAGES = [("en", _("English")), ("ru", _("Russian"))]
+
+LOCALE_PATHS = []
+
+MONTH_DAY_FORMAT = "F j"
+
+NUMBER_GROUPING = 0
+
+SHORT_DATE_FORMAT = "m/d/Y"
+
+SHORT_DATETIME_FORMAT = "m/d/Y H:i:s"
+
+THOUSAND_SEPARATOR = ","
+
+TIME_FORMAT = "H:i:s"
+
+TIME_INPUT_FORMATS = [
+    "%H:%M:%S",  # '14:30:59'
+    "%H:%M:%S.%f",  # '14:30:59.000200'
+    "%H:%M",  # '14:30'
+]
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_THOUSAND_SEPARATOR = True
+
+USE_TZ = True
+
+YEAR_MONTH_FORMAT = "F Y"
+
+
+# HTTP
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 DATA_UPLOAD_MAX_NUMBER_FILES = None
+
+DEFAULT_CHARSET = "utf-8"
+
+FORCE_SCRIPT_NAME = None
+
+INTERNAL_IPS = env(
+    "DJANGO_INTERNAL_IPS",
+    list,
+    default=["127.0.0.1"],
+)
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+]
+
+SIGNING_BACKEND = "django.core.signing.TimestampSigner"
+
+USE_X_FORWARDED_HOST = False
+
+USE_X_FORWARDED_PORT = False
+
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Notifiers settings
@@ -308,10 +353,153 @@ LOGGING = {
     "loggers": LOGGING_LOGGERS,
 }
 
+LOGGING_CONFIG = "logging.config.dictConfig"
+
+
+# Models
+
+ABSOLUTE_URL_OVERRIDES = {}
+
+FIXTURE_DIRS = []
+
+INSTALLED_APPS = [
+    # Build-in apps
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # Healthcheck
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.migrations",
+    # Third-party apps
+    "ninja",
+    "corsheaders",
+    # Internal apps
+    "core.product",
+    "core.product.log",
+    # API v1 apps
+    "core.api.v1.health",
+    "core.api.v1.check_auth",
+    "core.api.v1.product",
+]
+
 
 # Security
 
-SECURE_REFERRER_POLICY = "unsafe-url"
+LANGUAGE_COOKIE_AGE = 31449600
+
+LANGUAGE_COOKIE_DOMAIN = None
+
+LANGUAGE_COOKIE_HTTPONLY = False
+
+LANGUAGE_COOKIE_NAME = "django_language"
+
+LANGUAGE_COOKIE_PATH = "/"
+
+LANGUAGE_COOKIE_SAMESITE = "Lax"
+
+LANGUAGE_COOKIE_SECURE = False
+
+SECURE_PROXY_SSL_HEADER = None
+
+CSRF_COOKIE_AGE = 31449600
+
+CSRF_COOKIE_DOMAIN = None
+
+CSRF_COOKIE_HTTPONLY = False
+
+CSRF_COOKIE_NAME = "djangocsrftoken"
+
+CSRF_COOKIE_PATH = "/"
+
+CSRF_COOKIE_SAMESITE = "Lax"
+
+CSRF_COOKIE_SECURE = False
+
+CSRF_FAILURE_VIEW = "django.views.csrf.csrf_failure"
+
+CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
+
+CSRF_TRUSTED_ORIGINS = env(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    list,
+    default=["http://localhost", "http://127.0.0.1"],
+)
+
+CSRF_USE_SESSIONS = False
+
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="very_insecure_key")
+
+SECRET_KEY_FALLBACKS = []
+
+
+# Sessions
+
+SESSION_CACHE_ALIAS = "default"
+
+SESSION_COOKIE_AGE = 1209600
+
+SESSION_COOKIE_DOMAIN = None
+
+SESSION_COOKIE_HTTPONLY = True
+
+SESSION_COOKIE_NAME = "djangosessionid"
+
+SESSION_COOKIE_PATH = "/"
+
+SESSION_COOKIE_SAMESITE = "Lax"
+
+SESSION_COOKIE_SECURE = False
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+SESSION_FILE_PATH = None
+
+SESSION_SAVE_EVERY_REQUEST = False
+
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.JSONSerializer"
+
+
+# Templates
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "autoescape": True,
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+            "debug": DEBUG,
+            "string_if_invalid": "",
+            "file_charset": "utf-8",
+        },
+    }
+]
+
+
+# Testing
+
+TEST_NON_SERIALIZED_APPS = []
+
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
+
+
+# URLs
+
+ROOT_URLCONF = "config.urls"
 
 
 # debug-toolbar settings
