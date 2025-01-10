@@ -37,13 +37,13 @@ And setup env vars according to your needs.
 ##### For dev enviroment
 
 ```bash
-npm install --only=dev
+npm install
 ```
 
 ##### For prod enviroment
 
 ```bash
-npm install
+npm install --omit=dev
 ```
 
 #### Running
