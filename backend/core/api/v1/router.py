@@ -6,6 +6,7 @@ from core.api.v1 import auth, handlers
 from core.api.v1.check_auth.views import router as check_auth_router
 from core.api.v1.health.views import router as health_router
 from core.api.v1.product.views import router as product_router
+from core.api.v1.shopping_cart.views import router as cart_router
 
 router = NinjaAPI(
     title="FridgeFlow API",
@@ -30,6 +31,11 @@ router.add_router(
 router.add_router(
     "product",
     product_router,
+    auth=auth.BearerAuth(),
+)
+router.add_router(
+    "shopping_cart",
+    cart_router,
     auth=auth.BearerAuth(),
 )
 

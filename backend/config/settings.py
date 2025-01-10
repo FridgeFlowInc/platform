@@ -382,10 +382,11 @@ INSTALLED_APPS = [
     # Internal apps
     "core.product",
     "core.product.log",
+    "core.shopping_cart",
     # API v1 apps
     "core.api.v1.health",
-    "core.api.v1.check_auth",
     "core.api.v1.product",
+    "core.api.v1.shopping_cart",
 ]
 
 
