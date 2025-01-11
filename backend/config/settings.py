@@ -377,14 +377,14 @@ INSTALLED_APPS = [
     "health_check.storage",
     "health_check.contrib.migrations",
     # Third-party apps
-    "ninja",
     "corsheaders",
+    "django_extensions",
+    "ninja",
     # Internal apps
     "core.product",
     "core.product.log",
     "core.shopping_cart",
     # API v1 apps
-    "core.api.v1.health",
     "core.api.v1.product",
     "core.api.v1.shopping_cart",
 ]

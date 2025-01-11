@@ -9,8 +9,6 @@ from config import handlers
 urlpatterns = [
     # Admin urls
     path("admin/", admin.site.urls),
-    # Health urls
-    path("health/", include("health_check.urls")),
     # API urls
     path("api/", include("core.api.urls")),
 ]

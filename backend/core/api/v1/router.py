@@ -4,7 +4,6 @@ from ninja import NinjaAPI
 
 from core.api.v1 import auth, handlers
 from core.api.v1.check_auth.views import router as check_auth_router
-from core.api.v1.health.views import router as health_router
 from core.api.v1.product.views import router as product_router
 from core.api.v1.shopping_cart.views import router as cart_router
 
@@ -19,10 +18,6 @@ router = NinjaAPI(
 
 # Register application's routers
 
-router.add_router(
-    "health",
-    health_router,
-)
 router.add_router(
     "check_auth",
     check_auth_router,
