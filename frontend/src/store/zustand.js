@@ -27,7 +27,7 @@ export const useStore = create((set) => ({
     setTokenToCookie(tokenCookieName, token);
   },
   logout: () => {
-    set({ isAuthenticated: false, token: null, user: null, checkedAuth: true });
+    set({ isAuthenticated: false, checkedAuth: true, token: null });
     unsetTokenfromCookie(tokenCookieName);
   },
   checkAuth: async () => {
