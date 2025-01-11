@@ -107,3 +107,24 @@ def get_product_stats(
     return schemas.ProductStatsResponse(
         product_id=product_id, quantity_changes=daily_changes
     )
+
+@router.get("/stats", response=list[schemas.DailyChange])
+def get_product_stats(
+    request,
+    date_after: datetime.date,
+    date_before: datetime.date,
+):
+    entries = ProductLog.objects.all().filter(timestamp__date__range=(date_after, date_before))
+    daily_change = defaultdict(float)
+    for entry in entries:
+        day = entry.timestamp.date()
+        daily_change[day] += entry.quantity_change
+
+    daily_changes = [
+        schemas.DailyChange(
+            date=day, quantity_change_for_date=daily_change[day]
+        )
+        for day in daily_change
+    ]
+
+    return daily_changes
