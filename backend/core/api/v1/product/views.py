@@ -3,8 +3,9 @@ import uuid
 from collections import defaultdict
 from http import HTTPStatus as status  # noqa: N813
 
+from django.db import connection
 from django.shortcuts import get_object_or_404
-from ninja import Router
+from ninja import Query, Router
 
 from core.api.v1.product import schemas
 from core.product.log.models import ProductLog
@@ -19,7 +20,12 @@ def list_product_logs(request):
 
 
 @router.get("/search", response=list[schemas.ProductOut])
-def search_product(request, query: str): ...
+def search_product(request, filters: schemas.ProductFilterSchema = Query(...)):  # noqa: B008
+    if connection.vendor == "postgresql":
+        pass
+
+    products = Product.objects.all()
+    return filters.filter(products)
 
 
 @router.get("", response=list[schemas.ProductOut])
