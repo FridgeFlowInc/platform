@@ -1,10 +1,15 @@
 import datetime
 from uuid import UUID
 
-from ninja import ModelSchema, Schema
+from ninja import FilterSchema, ModelSchema, Schema
 
 from core.product.log.models import ProductLog
 from core.product.models import Product
+
+
+class ProductFilterSchema(FilterSchema):
+    name: str | None = None
+    category: str | None = None
 
 
 class ProductOut(ModelSchema):

@@ -52,7 +52,7 @@ line-length = 79
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "ANN", "ARG", "COM812", "ISC001"]
+ignore = ["D", "ANN", "ARG", "COM812", "ISC001", "PT009"]
 
 [tool.ruff.format]
 docstring-code-format = true
