@@ -5,10 +5,6 @@ from core.api.v1.router import router as api_v1_router
 
 urlpatterns = [
     path("v1/", api_v1_router.urls),
+    # Health endpoint
     path("health", MainView.as_view(), name="health_check_home"),
-    path(
-        "health/<str:subset>/",
-        MainView.as_view(),
-        name="health_check_subset",
-    ),
 ]
