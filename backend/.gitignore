@@ -169,8 +169,5 @@ cython_debug/
 # Ruff files
 .ruff_cache
 
-# App logs
-logs
-
 # Collected static files
 static

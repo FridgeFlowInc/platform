@@ -183,8 +183,5 @@ Dockerfile
 # Dev utility
 check.sh
 
-# App logs
-logs
-
 # Collected static files
 static

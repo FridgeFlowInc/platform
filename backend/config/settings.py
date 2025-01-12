@@ -1,4 +1,4 @@
-"""Django settings for fridgeflow-backend."""
+"""Django settings for fridgeflow backend."""
 
 import logging
 from pathlib import Path
@@ -82,7 +82,7 @@ STATICFILES_FINDERS = [
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440
 
 
-# Cors settings
+# Cors
 
 CORS_ALLOWED_ORIGINS_FROM_ENV = env("DJANGO_CORS_ALLOWED_ORIGINS", list, ["*"])
 
@@ -191,6 +191,7 @@ INTERNAL_IPS = env(
 )
 
 MIDDLEWARE = [
+    "django_guid.middleware.guid_middleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -207,7 +208,7 @@ USE_X_FORWARDED_PORT = False
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Notifiers settings
+# Notifiers
 
 # Telegram
 
@@ -224,9 +225,7 @@ NOTIFIER_TELEGRAM_THREAD_ID = env(
 )
 
 
-# Logging settings
-
-(BASE_DIR / "logs").mkdir(exist_ok=True)
+# Logging
 
 LOGGER_NAME = "fridgeflow"
 
@@ -239,12 +238,18 @@ LOGGING_FILTERS = {
     "require_debug_false": {
         "()": "django.utils.log.RequireDebugFalse",
     },
+    "correlation_id": {
+        "()": "django_guid.log_filters.CorrelationId",
+    },
 }
 
 LOGGING_FORMATTERS = {
     "json": {
         "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-        "format": ("{levelname}{asctime}{name}{pathname}{lineno}{message}"),
+        "format": (
+            "{levelname}{correlation_id}{asctime}"
+            "{name}{pathname}{lineno}{message}"
+        ),
         "style": "{",
     },
     "text": {
@@ -266,38 +271,33 @@ LOGGING_FORMATTERS = {
 }
 
 LOGGING_HANDLERS = {
-    "console": {
+    "console_debug": {
         "class": "logging.StreamHandler",
         "level": "DEBUG",
         "filters": ["require_debug_true"],
         "formatter": "text",
     },
-    "rotating_file": {
-        "class": "logging.handlers.TimedRotatingFileHandler",
+    "console_prod": {
+        "class": "logging.StreamHandler",
         "level": "INFO",
-        "filters": ["require_debug_false"],
-        "filename": BASE_DIR / "logs" / "app.log",
-        "when": "midnight",
-        "utc": True,
-        "interval": 1,
-        "backupCount": 30,
+        "filters": ["require_debug_false", "correlation_id"],
         "formatter": "json",
     },
 }
 
 LOGGING_LOGGERS = {
     "django": {
-        "handlers": ["console", "rotating_file"],
+        "handlers": ["console_debug", "console_prod"],
         "level": "INFO" if DEBUG else "ERROR",
         "propagate": False,
     },
     "django.request": {
-        "handlers": ["console", "rotating_file"],
+        "handlers": ["console_debug", "console_prod"],
         "level": "INFO" if DEBUG else "ERROR",
         "propagate": False,
     },
     "django.server": {
-        "handlers": ["console"],
+        "handlers": ["console_debug"],
         "level": "INFO",
         "filters": ["require_debug_true"],
         "propagate": False,
@@ -306,23 +306,23 @@ LOGGING_LOGGERS = {
     "django.db.backends.schema": {"handlers": []},
     "django.security": {"handlers": [], "propagate": True},
     "django.db.backends": {
-        "handlers": ["console"],
+        "handlers": ["console_debug"],
         "filters": ["require_debug_true"],
         "level": "DEBUG",
         "propagate": False,
     },
     "health-check": {
-        "handlers": ["console", "rotating_file"],
+        "handlers": ["console_debug", "console_prod"],
         "level": "INFO" if DEBUG else "ERROR",
         "propagate": False,
     },
     LOGGER_NAME: {
-        "handlers": ["console", "rotating_file"],
+        "handlers": ["console_debug", "console_prod"],
         "level": "DEBUG" if DEBUG else "INFO",
         "propagate": False,
     },
     "root": {
-        "handlers": ["console", "rotating_file"],
+        "handlers": ["console_debug", "console_prod"],
         "level": "INFO" if DEBUG else "ERROR",
         "propagate": False,
     },
@@ -340,6 +340,7 @@ if NOTIFIER_TELEGRAM_BOT_TOKEN and NOTIFIER_TELEGRAM_CHAT_ID:
         "delay": 2,
         "timeout": 5,
     }
+    LOGGING_LOGGERS["django"]["handlers"].append("telegram")
     LOGGING_LOGGERS["django.request"]["handlers"].append("telegram")
     LOGGING_LOGGERS["health-check"]["handlers"].append("telegram")
     LOGGING_LOGGERS[LOGGER_NAME]["handlers"].append("telegram")
@@ -377,17 +378,30 @@ INSTALLED_APPS = [
     "health_check.storage",
     "health_check.contrib.migrations",
     # Third-party apps
-    "ninja",
     "corsheaders",
+    "django_extensions",
+    "django_guid",
+    "ninja",
     # Internal apps
     "core.product",
     "core.product.log",
     "core.shopping_cart",
     # API v1 apps
-    "core.api.v1.health",
     "core.api.v1.product",
     "core.api.v1.shopping_cart",
 ]
+
+# GUID
+
+DJANGO_GUID = {
+    "GUID_HEADER_NAME": "Correlation-ID",
+    "VALIDATE_GUID": True,
+    "RETURN_HEADER": True,
+    "EXPOSE_HEADER": True,
+    "INTEGRATIONS": [],
+    "IGNORE_URLS": [],
+    "UUID_LENGTH": 32,
+}
 
 
 # Security
@@ -503,7 +517,7 @@ TEST_RUNNER = "django.test.runner.DiscoverRunner"
 ROOT_URLCONF = "config.urls"
 
 
-# debug-toolbar settings
+# debug-toolbar
 
 DEBUG_TOOLBAR_CONFIG = {"SHOW_COLLAPSED": True, "UPDATE_ON_FETCH": True}
 
