@@ -33,7 +33,7 @@ class ProductTest(TestCase):
         )
 
     def test_product_creation(self):
-        response = self.client.post("/", json = self.test_product)
+        response = self.client.post("/", json=self.test_product)
         self.assertEqual(response.status_code, 201)
 
     def test_product_stats(self):
@@ -47,32 +47,48 @@ class ProductTest(TestCase):
             product_id=self.product_id,
             action_type="C",
             timestamp=datetime.date(2000, 1, 1),
-            quantity_change=10
+            quantity_change=10,
         )
         ProductLog.objects.create(
             product_id=self.product_id,
             action_type="U",
             timestamp=datetime.date(2000, 1, 1),
-            quantity_change=15
+            quantity_change=15,
         )
         ProductLog.objects.create(
             product_id=self.product_id,
             action_type="U",
             timestamp=datetime.date(2000, 1, 2),
-            quantity_change=-8
+            quantity_change=-8,
         )
         ProductLog.objects.create(
             product_id=self.product_id,
             action_type="D",
             timestamp=datetime.date(2000, 1, 4),
-            quantity_change=-17
+            quantity_change=-17,
         )
 
-        id = str(self.product_id)
-        response1 = self.client.get("/" + id + "/stats?date_after=2000-01-01&date_before=2000-01-04")
-        response2 = self.client.get("/" + id + "/stats?date_after=2000-01-01&date_before=2000-01-02")
-        response3 = self.client.get("/" + id + "/stats?date_after=2000-01-03&date_before=2000-01-03")
-        response4 = self.client.get("/" + id + "/stats?date_after=2000-01-04&date_before=2000-01-04")
+        product_id = str(self.product_id)
+        response1 = self.client.get(
+            "/"
+            + product_id
+            + "/stats?date_after=2000-01-01&date_before=2000-01-04"
+        )
+        response2 = self.client.get(
+            "/"
+            + product_id
+            + "/stats?date_after=2000-01-01&date_before=2000-01-02"
+        )
+        response3 = self.client.get(
+            "/"
+            + product_id
+            + "/stats?date_after=2000-01-03&date_before=2000-01-03"
+        )
+        response4 = self.client.get(
+            "/"
+            + product_id
+            + "/stats?date_after=2000-01-04&date_before=2000-01-04"
+        )
 
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(response2.status_code, 200)
@@ -96,6 +112,3 @@ class ProductTest(TestCase):
         self.assertEqual(response2.json()["quantity_changes"], expected2)
         self.assertEqual(response3.json()["quantity_changes"], expected3)
         self.assertEqual(response4.json()["quantity_changes"], expected4)
-
-
-    

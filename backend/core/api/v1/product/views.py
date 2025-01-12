@@ -108,13 +108,16 @@ def get_product_stats(
         product_id=product_id, quantity_changes=daily_changes
     )
 
+
 @router.get("/stats", response=list[schemas.DailyChange])
-def get_product_stats(
+def get_products_stats(
     request,
     date_after: datetime.date,
     date_before: datetime.date,
 ):
-    entries = ProductLog.objects.all().filter(timestamp__date__range=(date_after, date_before))
+    entries = ProductLog.objects.all().filter(
+        timestamp__date__range=(date_after, date_before)
+    )
     daily_change = defaultdict(float)
     for entry in entries:
         day = entry.timestamp.date()
@@ -127,4 +130,4 @@ def get_product_stats(
         for day in daily_change
     ]
 
-    return daily_changes
+    return daily_changes  # noqa: RET504

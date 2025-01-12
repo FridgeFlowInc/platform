@@ -1,7 +1,8 @@
-import uuid
 import datetime
+import uuid
 
 from django.db import models
+
 
 class ActionChoices(models.Choices):
     create = "C"
