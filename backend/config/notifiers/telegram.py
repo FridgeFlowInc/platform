@@ -4,7 +4,7 @@ import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 
-import requests
+import httpx
 from django.utils.timezone import get_current_timezone
 
 TELEGRAM_LOG_HANDLER = logging.getLogger("telegram_log_handler")
@@ -63,11 +63,11 @@ class LoggingHandler(logging.Handler):
 
         for attempt in range(1, self.retries + 1):
             try:
-                response = requests.post(
+                response = httpx.post(
                     self.api_url, data=payload, timeout=self.timeout
                 )
                 response.raise_for_status()
-            except requests.exceptions.RequestException as e:  # noqa: PERF203
+            except httpx.HTTPError as e:  # noqa: PERF203
                 if attempt == self.retries:
                     TELEGRAM_LOG_HANDLER.exception(
                         "Failed to send to Telegram after %d attempts: %s",
