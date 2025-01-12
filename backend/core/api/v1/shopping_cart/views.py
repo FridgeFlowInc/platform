@@ -24,6 +24,13 @@ def add_product(request, product: schemas.ShoppingCartProductIn):
     return status.CREATED, product
 
 
+@router.delete("", response={status.OK: None})
+def delete_cart(request):
+    cart = ShoppingCartProduct.objects.all()
+    for product in cart:
+        product.delete()
+
+
 @router.get("/{product_id}", response=schemas.ShoppingCartProductOut)
 def get_product(request, product_id: uuid.UUID):
     return get_object_or_404(ShoppingCartProduct, id=product_id)
