@@ -4,7 +4,7 @@ from collections import defaultdict
 from http import HTTPStatus as status  # noqa: N813
 
 from django.shortcuts import get_object_or_404
-from ninja import Query, Router
+from ninja import Router
 
 from core.api.v1.product import schemas
 from core.product.log.models import ProductLog
@@ -20,8 +20,8 @@ def list_product_logs(request):
 
 
 @router.get("/search", response=list[schemas.ProductOut])
-def search_product(request, filters: schemas.ProductFilterSchema = Query(...)):  # noqa: B008
-    return search(dict(filters))
+def search_product(request, query: str):
+    return search(query, fields=["name", "category"])
 
 
 @router.get("", response=list[schemas.ProductOut])
