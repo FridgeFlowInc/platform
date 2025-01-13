@@ -24,6 +24,10 @@ def search_product(request, query: str):
     return search(query, fields=["name", "category"])
 
 
+@router.post("/search_by_qr", response=list[schemas.ProductOut])
+def search_product_by_qr(request, product: schemas.ProductIn):
+    return Product.objects.filter(**product.dict())
+
 @router.get("", response=list[schemas.ProductOut])
 def list_products(request):
     return Product.objects.all()
