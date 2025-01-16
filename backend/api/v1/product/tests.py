@@ -113,3 +113,117 @@ class ProductTest(TestCase):
         self.assertEqual(response2.json()["quantity_changes"], expected2)
         self.assertEqual(response3.json()["quantity_changes"], expected3)
         self.assertEqual(response4.json()["quantity_changes"], expected4)
+
+    def test_delete_product(self):
+        product = Product(**self.test_product)
+        product.full_clean()
+        product.save()
+        
+        response = self.client.delete("/" + str(product.id))
+        self.assertEqual(response.status_code,status.OK)
+        self.assertRaises(Product.DoesNotExist, lambda: Product.objects.get(id=product.id))
+        
+        response = self.client.delete("/" + str(product.id))
+        self.assertEqual(response.status_code, status.NOT_FOUND)
+
+    def test_update_product(self):
+        product = Product(**self.test_product)
+        product.full_clean()
+        product.save()
+
+        test_product = self.test_product.copy()
+        test_product["quantity"] = 20.000
+        test_product["id"] = str(product.id)
+
+        response = self.client.put("/" + str(product.id), json = test_product)
+        self.assertEqual(response.status_code,status.OK)
+        for attr in test_product:
+            test_product[attr] = str(test_product[attr])
+        self.assertEqual(response.json(), test_product)
+        self.assertEqual(float(Product.objects.get(id=product.id).quantity), float(test_product["quantity"]))
+    
+    def test_get_product(self):
+        response = self.client.post("/", json=self.test_product)
+        id = response.json()["id"]
+        expected_product = response.json()
+        for attr in expected_product:
+            try:
+                expected_product[attr] = float(expected_product[attr])
+            except ValueError:
+                1 == 1 
+
+        response = self.client.get("/" + str(id))
+        result_product = response.json()
+        for attr in result_product:
+            try:
+                result_product[attr] = float(result_product[attr])
+            except ValueError:
+                1 == 1 
+
+        self.assertEqual(response.status_code,status.OK)
+        self.assertEqual(result_product, expected_product)
+
+        response = self.client.delete("/" + str(id))
+        self.assertEqual(response.status_code,status.OK)
+        response = self.client.get("/" + str(id))
+        self.assertEqual(response.status_code, status.NOT_FOUND)
+
+    def test_list_products(self):
+        response = self.client.post("/", json=self.test_product)
+        expected_product_1 = response.json()
+        for attr in expected_product_1:
+            try:
+                expected_product_1[attr] = float(expected_product_1[attr])
+            except ValueError:
+                1 == 1 
+        response = self.client.post("/", json=self.test_product)
+        expected_product_2 = response.json()
+        for attr in expected_product_2:
+            try:
+                expected_product_2[attr] = float(expected_product_2[attr])
+            except ValueError:
+                1 == 1 
+
+        response = self.client.get("/")
+        self.assertEqual(response.status_code,status.OK)
+        result = response.json()
+        for pr in result:
+            for attr in pr:
+                try:
+                    pr[attr] = float(pr[attr])
+                except ValueError:
+                    1 == 1 
+        self.assertEqual(result, [expected_product_1, expected_product_2])
+
+    def test_search_product(self):
+        response = self.client.post("/", json=self.test_product)
+        expected_product_1 = response.json()
+        for attr in expected_product_1:
+            try:
+                expected_product_1[attr] = float(expected_product_1[attr])
+            except ValueError:
+                1 == 1 
+        response = self.client.post("/", json=self.test_product)
+        expected_product_2 = response.json()
+        for attr in expected_product_2:
+            try:
+                expected_product_2[attr] = float(expected_product_2[attr])
+            except ValueError:
+                1 == 1 
+
+        response = self.client.post("/search_by_qr", json=self.test_product)
+        self.assertEqual(response.status_code, status.OK)
+        result = response.json()
+        for pr in result:
+            for attr in pr:
+                try:
+                    pr[attr] = float(pr[attr])
+                except ValueError:
+                    1 == 1 
+        self.assertEqual(result, [expected_product_1, expected_product_2])
+
+        no_such_product = self.test_product
+        no_such_product["name"] = "no_such_name"
+        response = self.client.post("/search_by_qr", json=no_such_product)
+        self.assertEqual(response.json(), [])
+

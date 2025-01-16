@@ -77,7 +77,7 @@ def update_product(
 @router.delete(
     "/{product_id}",
     response={
-        status.NO_CONTENT: None,
+        status.OK: None,
         status.NOT_FOUND: global_schemas.NotFoundError,
     },
 )
