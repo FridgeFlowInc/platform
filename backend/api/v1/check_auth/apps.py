@@ -1,4 +1,4 @@
-from django.core import AppConfig
+from django.apps import AppConfig
 
 
 class CheckAuthConfig(AppConfig):
