@@ -383,12 +383,13 @@ INSTALLED_APPS = [
     "django_guid",
     "ninja",
     # Internal apps
-    "core.product",
-    "core.product.log",
-    "core.shopping_cart",
+    "apps.product",
+    "apps.product.log",
+    "apps.shopping_cart",
     # API v1 apps
-    "core.api.v1.product",
-    "core.api.v1.shopping_cart",
+    "api.v1.check_auth",
+    "api.v1.product",
+    "api.v1.shopping_cart",
 ]
 
 # GUID

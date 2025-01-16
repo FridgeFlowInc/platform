@@ -11,7 +11,7 @@ TELEGRAM_LOG_HANDLER = logging.getLogger("telegram_log_handler")
 
 LEVEL_EMOJIS = {
     "DEBUG": "🐞",
-    "INFO": "ℹ️",  # noqa: RUF001
+    "INFO": "ℹ️",
     "WARNING": "⚠️",
     "ERROR": "❌",
     "CRITICAL": "🚨",
@@ -22,8 +22,14 @@ class LoggingHandler(logging.Handler):
     _executor = ThreadPoolExecutor(max_workers=5)
 
     def __init__(
-        self, token, chat_id, thread_id=None, retries=3, delay=2, timeout=5
-    ):
+        self,
+        token: str,
+        chat_id: int,
+        thread_id: int | None = None,
+        retries: int | None = 3,
+        delay: int | None = 2,
+        timeout: int | None = 5,
+    ) -> None:
         super().__init__()
 
         self.token = token
@@ -44,7 +50,7 @@ class LoggingHandler(logging.Handler):
             '<pre><code class="language-message">{message}</code></pre>\n'
         )
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         try:
             formatted_record = self.format(record)
             self._executor.submit(self._send_message, formatted_record)
@@ -52,7 +58,7 @@ class LoggingHandler(logging.Handler):
             self.handleError(record)
             TELEGRAM_LOG_HANDLER.exception(e)
 
-    def _send_message(self, formatted_record):
+    def _send_message(self, formatted_record: str) -> None:
         payload = {
             "chat_id": self.chat_id,
             "text": formatted_record,
@@ -62,24 +68,22 @@ class LoggingHandler(logging.Handler):
             payload["reply_to_message_id"] = self.thread_id
 
         for attempt in range(1, self.retries + 1):
-            try:
-                response = httpx.post(
-                    self.api_url, data=payload, timeout=self.timeout
-                )
-                response.raise_for_status()
-            except httpx.HTTPError as e:  # noqa: PERF203
+            response = httpx.post(
+                self.api_url, data=payload, timeout=self.timeout
+            )
+            if response.status_code != httpx.codes.OK:
                 if attempt == self.retries:
                     TELEGRAM_LOG_HANDLER.exception(
                         "Failed to send to Telegram after %d attempts: %s",
                         self.retries,
-                        e,
+                        response.text,
                     )
                 else:
                     time.sleep(self.delay)
             else:
                 return
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         try:
             asctime = datetime.datetime.fromtimestamp(
                 record.created, tz=get_current_timezone()
@@ -114,12 +118,12 @@ class LoggingHandler(logging.Handler):
             return formatted_message
 
     @staticmethod
-    def _format_exception(exc_info):
+    def _format_exception(exc_info: Exception) -> str:
         exc_text = "".join(traceback.format_exception(*exc_info))
         return (
             f"\n<pre><code class='language-traceback'>{exc_text}</code></pre>"
         )
 
     @classmethod
-    def shutdown_executor(cls):
+    def shutdown_executor(cls) -> None:
         cls._executor.shutdown(wait=True)

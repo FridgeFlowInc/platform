@@ -1,4 +1,4 @@
-"""ASGI config for fridgeflow-backend."""
+"""ASGI config for fridgeflow backend."""
 
 import os
 

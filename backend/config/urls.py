@@ -1,4 +1,4 @@
-"""URL configuration for frigeflow-backend."""
+"""URL configuration for frigeflow backend."""
 
 from django.conf import settings
 from django.contrib import admin
@@ -6,11 +6,20 @@ from django.urls import include, path
 
 from config import handlers
 
+# Custom settings for django admin
+
+admin.site.site_title = "FridgeFlow"
+admin.site.site_header = "FridgeFlow"
+admin.site.index_title = "FridgeFlow"
+
+
+# Basic urlpatterns
+
 urlpatterns = [
     # Admin urls
     path("admin/", admin.site.urls),
     # API urls
-    path("api/", include("core.api.urls")),
+    path("api/", include("api.urls")),
 ]
 
 
