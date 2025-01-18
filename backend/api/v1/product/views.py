@@ -17,9 +17,28 @@ from apps.product.models import Product
 router = Router(tags=["product"])
 
 
-@router.get("/logs", response=list[schemas.ProductLogOut])
-def list_product_logs(request: HttpRequest) -> BaseManager[Product]:
-    return ProductLog.objects.all()
+
+
+@router.get("/analytics", response=list[schemas.DailyChangeOut])
+def get_products_stats(
+    request: HttpRequest,
+    date_after: datetime.date,
+    date_before: datetime.date,
+) -> list[schemas.DailyChangeOut]:
+    entries = ProductLog.objects.all().filter(
+        timestamp__date__range=(date_after, date_before)
+    )
+    daily_change = defaultdict(float)
+    for entry in entries:
+        day = entry.timestamp.date()
+        daily_change[day] += entry.quantity_change
+
+    return [
+        schemas.DailyChangeOut(
+            date=day, quantity_change_for_date=daily_change[day]
+        )
+        for day in daily_change
+    ]
 
 
 @router.post("/search_by_qr", response=list[schemas.ProductOut])
@@ -118,25 +137,3 @@ def get_product_stats(
     return schemas.ProductStatsOut(
         product_id=product_id, quantity_changes=daily_changes
     )
-
-
-@router.get("/analytics", response=list[schemas.DailyChangeOut])
-def get_products_stats(
-    request: HttpRequest,
-    date_after: datetime.date,
-    date_before: datetime.date,
-) -> list[schemas.DailyChangeOut]:
-    entries = ProductLog.objects.all().filter(
-        timestamp__date__range=(date_after, date_before)
-    )
-    daily_change = defaultdict(float)
-    for entry in entries:
-        day = entry.timestamp.date()
-        daily_change[day] += entry.quantity_change
-
-    return [
-        schemas.DailyChange(
-            date=day, quantity_change_for_date=daily_change[day]
-        )
-        for day in daily_change
-    ]
