@@ -17,8 +17,6 @@ from apps.product.models import Product
 router = Router(tags=["product"])
 
 
-
-
 @router.get("/analytics", response=list[schemas.DailyChangeOut])
 def get_products_stats(
     request: HttpRequest,
@@ -96,7 +94,7 @@ def update_product(
 @router.delete(
     "/{product_id}",
     response={
-        status.OK: None,
+        status.NO_CONTENT: None,
         status.NOT_FOUND: global_schemas.NotFoundError,
     },
 )

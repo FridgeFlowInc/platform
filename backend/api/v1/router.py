@@ -12,7 +12,7 @@ router = NinjaAPI(
     version="1",
     description="API docs for FridgeFlow",
     openapi_url="/docs/openapi.json",
-    # csrf=True,
+    # csrf=True, noqa: ERA001
 )
 
 

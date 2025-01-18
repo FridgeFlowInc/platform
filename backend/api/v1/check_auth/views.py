@@ -17,5 +17,7 @@ router = Router(tags=["check_auth"])
     },
     summary="Check if user is authenticated",
 )
-def check_auth_index(request: HttpRequest) -> tuple[Literal[status.NO_CONTENT], None]:
+def check_auth_index(
+    request: HttpRequest,
+) -> tuple[Literal[status.NO_CONTENT], None]:
     return status.NO_CONTENT, None

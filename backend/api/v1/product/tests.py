@@ -118,11 +118,13 @@ class ProductTest(TestCase):
         product = Product(**self.test_product)
         product.full_clean()
         product.save()
-        
+
         response = self.client.delete("/" + str(product.id))
-        self.assertEqual(response.status_code,status.OK)
-        self.assertRaises(Product.DoesNotExist, lambda: Product.objects.get(id=product.id))
-        
+        self.assertEqual(response.status_code, status.NO_CONTENT)
+        self.assertRaises(
+            Product.DoesNotExist, lambda: Product.objects.get(id=product.id)
+        )
+
         response = self.client.delete("/" + str(product.id))
         self.assertEqual(response.status_code, status.NOT_FOUND)
 
@@ -135,13 +137,16 @@ class ProductTest(TestCase):
         test_product["quantity"] = 20.000
         test_product["id"] = str(product.id)
 
-        response = self.client.put("/" + str(product.id), json = test_product)
-        self.assertEqual(response.status_code,status.OK)
+        response = self.client.put("/" + str(product.id), json=test_product)
+        self.assertEqual(response.status_code, status.OK)
         for attr in test_product:
             test_product[attr] = str(test_product[attr])
         self.assertEqual(response.json(), test_product)
-        self.assertEqual(float(Product.objects.get(id=product.id).quantity), float(test_product["quantity"]))
-    
+        self.assertEqual(
+            float(Product.objects.get(id=product.id).quantity),
+            float(test_product["quantity"]),
+        )
+
     def test_get_product(self):
         response = self.client.post("/", json=self.test_product)
         id = response.json()["id"]
@@ -150,7 +155,7 @@ class ProductTest(TestCase):
             try:
                 expected_product[attr] = float(expected_product[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
 
         response = self.client.get("/" + str(id))
         result_product = response.json()
@@ -158,13 +163,13 @@ class ProductTest(TestCase):
             try:
                 result_product[attr] = float(result_product[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
 
-        self.assertEqual(response.status_code,status.OK)
+        self.assertEqual(response.status_code, status.OK)
         self.assertEqual(result_product, expected_product)
 
         response = self.client.delete("/" + str(id))
-        self.assertEqual(response.status_code,status.OK)
+        self.assertEqual(response.status_code, status.NO_CONTENT)
         response = self.client.get("/" + str(id))
         self.assertEqual(response.status_code, status.NOT_FOUND)
 
@@ -175,24 +180,24 @@ class ProductTest(TestCase):
             try:
                 expected_product_1[attr] = float(expected_product_1[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
         response = self.client.post("/", json=self.test_product)
         expected_product_2 = response.json()
         for attr in expected_product_2:
             try:
                 expected_product_2[attr] = float(expected_product_2[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
 
         response = self.client.get("/")
-        self.assertEqual(response.status_code,status.OK)
+        self.assertEqual(response.status_code, status.OK)
         result = response.json()
         for pr in result:
             for attr in pr:
                 try:
                     pr[attr] = float(pr[attr])
                 except ValueError:
-                    1 == 1 
+                    1 == 1
         self.assertEqual(result, [expected_product_1, expected_product_2])
 
     def test_search_product(self):
@@ -202,14 +207,14 @@ class ProductTest(TestCase):
             try:
                 expected_product_1[attr] = float(expected_product_1[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
         response = self.client.post("/", json=self.test_product)
         expected_product_2 = response.json()
         for attr in expected_product_2:
             try:
                 expected_product_2[attr] = float(expected_product_2[attr])
             except ValueError:
-                1 == 1 
+                1 == 1
 
         response = self.client.post("/search_by_qr", json=self.test_product)
         self.assertEqual(response.status_code, status.OK)
@@ -219,11 +224,10 @@ class ProductTest(TestCase):
                 try:
                     pr[attr] = float(pr[attr])
                 except ValueError:
-                    1 == 1 
+                    1 == 1
         self.assertEqual(result, [expected_product_1, expected_product_2])
 
         no_such_product = self.test_product
         no_such_product["name"] = "no_such_name"
         response = self.client.post("/search_by_qr", json=no_such_product)
         self.assertEqual(response.json(), [])
-

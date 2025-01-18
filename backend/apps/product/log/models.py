@@ -21,5 +21,7 @@ class ProductLog(models.Model):
     timestamp = models.DateTimeField(default=datetime.datetime.now)
 
     def __str__(self) -> str:
-        product_name = self.product.name if hasattr(self, "product") else "(deleted)"
+        product_name = (
+            self.product.name if hasattr(self, "product") else "(deleted)"
+        )
         return f"{product_name} | {self.action_type}"
