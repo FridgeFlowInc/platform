@@ -31,7 +31,8 @@ class ProductLogOut(ModelSchema):
 
 
 class DailyChangeOut(Schema):
-    quantity_change_for_date: float
+    positive_quantity_change_for_date: float
+    negative_quantity_change_for_date: float
     date: datetime.date
 
 

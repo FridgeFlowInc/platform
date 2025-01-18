@@ -97,17 +97,20 @@ class ProductTest(TestCase):
         self.assertEqual(response4.status_code, status.OK)
 
         expected1 = [
-            {"quantity_change_for_date": 25, "date": "2000-01-01"},
-            {"quantity_change_for_date": -8, "date": "2000-01-02"},
-            {"quantity_change_for_date": -17, "date": "2000-01-04"},
+            {"positive_quantity_change_for_date": 25.0, "negative_quantity_change_for_date" : 0.0, "date": "2000-01-01"},
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 8.0, "date": "2000-01-02"},
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 0.0, "date": "2000-01-03"},
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 17.0, "date": "2000-01-04"},
         ]
         expected2 = [
-            {"quantity_change_for_date": 25, "date": "2000-01-01"},
-            {"quantity_change_for_date": -8, "date": "2000-01-02"},
+            {"positive_quantity_change_for_date": 25.0, "negative_quantity_change_for_date" : 0.0, "date": "2000-01-01"},
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 8.0, "date": "2000-01-02"},
         ]
-        expected3 = []
+        expected3 = [
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 0.0, "date": "2000-01-03"},
+        ]
         expected4 = [
-            {"quantity_change_for_date": -17, "date": "2000-01-04"},
+            {"positive_quantity_change_for_date": 0.0, "negative_quantity_change_for_date" : 17.0, "date": "2000-01-04"},
         ]
         self.assertEqual(response1.json()["quantity_changes"], expected1)
         self.assertEqual(response2.json()["quantity_changes"], expected2)
