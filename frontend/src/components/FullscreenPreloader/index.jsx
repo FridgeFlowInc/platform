@@ -1,1 +1,0 @@
-export { FullscreenPreloader } from './component';
