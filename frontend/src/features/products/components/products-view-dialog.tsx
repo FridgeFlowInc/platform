@@ -18,6 +18,11 @@ interface Props {
 }
 
 export function ProductsViewDialog({ open, onOpenChange, currentRow }: Props) {
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-')
+    return `${month}-${day}-${year}`
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-h-[90vh] overflow-y-auto max-w-full sm:max-w-[425px]'>
@@ -29,23 +34,23 @@ export function ProductsViewDialog({ open, onOpenChange, currentRow }: Props) {
           <div className='space-y-4'>
             <div>
               <h4 className='font-bold'>Название</h4>
-              <p>{currentRow?.name || '—'}</p>
+              <p>{currentRow.name}</p>
             </div>
             <div>
               <h4 className='font-bold'>Категория</h4>
-              <p>{currentRow?.category || '—'}</p>
+              <p>{currentRow.category}</p>
             </div>
             <div>
               <h4 className='font-bold'>Производитель</h4>
-              <p>{currentRow?.manufacturer || '—'}</p>
+              <p>{currentRow.manufacturer}</p>
             </div>
             <div>
               <h4 className='font-bold'>Количество</h4>
-              <p>{currentRow?.quantity || '—'}</p>
+              <p>{currentRow.quantity}</p>
             </div>
             <div>
               <h4 className='font-bold'>Ед. измерения</h4>
-              <p>{currentRow?.unit || '—'}</p>
+              <p>{currentRow.unit}</p>
             </div>
             <div>
               <h4 className='font-bold'>Пищевая ценность</h4>
@@ -61,11 +66,11 @@ export function ProductsViewDialog({ open, onOpenChange, currentRow }: Props) {
             </div>
             <div>
               <h4 className='font-bold'>Дата производства</h4>
-              <p>{currentRow?.manufacture_date || '—'}</p>
+              <p>{formatDate(currentRow.manufacture_date)}</p>
             </div>
             <div>
               <h4 className='font-bold'>Срок годности</h4>
-              <p>{currentRow?.expiration_date || '—'}</p>
+              <p>{formatDate(currentRow.expiration_date)}</p>
             </div>
             <div>
               <h4 className='font-bold'>Заметки</h4>

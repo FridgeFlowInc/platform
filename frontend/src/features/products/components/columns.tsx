@@ -24,16 +24,24 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const normalStyle =
         'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'
+
       const expiresSoonStyle =
         'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10'
+
       const style =
         new Date(row.getValue('expiration_date')) - new Date() > 3 * 86400000
           ? normalStyle
           : expiresSoonStyle
+
+      const formatDate = (dateString: string) => {
+        const [year, month, day] = dateString.split('-')
+        return `${month}-${day}-${year}`
+      }
+
       return (
         <div className='flex space-x-2'>
           <Badge variant='outline' className={style}>
-            {row.getValue('expiration_date')}
+            {formatDate(row.getValue('expiration_date'))}
           </Badge>
         </div>
       )
