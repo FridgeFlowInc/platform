@@ -10,14 +10,17 @@ COPY package*.json ./
 # Setup env vars
 ENV NODE_ENV=production
 
+# Install pnpm
+RUN npm install -g pnpm
+
 # Install dependencies
-RUN npm install && npm cache clean --force
+RUN pnpm install --prod
 
 # Copy the application code
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 
 # Stage 2: Serve the application
