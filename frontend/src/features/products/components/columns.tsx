@@ -86,6 +86,10 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <div className='flex justify-end'>
+        <DataTableRowActions row={row} />
+      </div>
+    ),
   },
 ]

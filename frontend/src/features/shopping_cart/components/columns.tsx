@@ -18,7 +18,7 @@ export const columns: ColumnDef<shoppingCartProduct>[] = [
   {
     id: 'actions',
     cell: ({ row }) => (
-      <div className='flex'>
+      <div className='flex justify-end'>
         <DataTableRowActions row={row} />
       </div>
     ),
