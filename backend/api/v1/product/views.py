@@ -90,6 +90,8 @@ def delete_product(request: HttpRequest, product_id: uuid.UUID) -> None:
     )
     product.delete()
 
+    return status.NO_CONTENT, None
+
 
 @router.get("/{product_id}/stats", response=schemas.ProductStatsOut)
 def get_product_stats(
