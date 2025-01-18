@@ -6,6 +6,7 @@ Ensure you have the following installed on your system:
 
 - [Node.js](https://nodejs.org/) (v16 or higher)
 - [npm](https://www.npmjs.com/)
+- [pnpm](https://pnpm.io/)
 - [Docker](https://www.docker.com/) (for containerized setup)
 
 ## Basic setup
@@ -37,13 +38,13 @@ And setup env vars according to your needs.
 ##### For dev enviroment
 
 ```bash
-npm install
+pnpm install
 ```
 
 ##### For prod enviroment
 
 ```bash
-npm install --omit=dev
+pnpm install --prod
 ```
 
 #### Running
@@ -51,7 +52,7 @@ npm install --omit=dev
 ##### In dev mode
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ##### In prod mode
@@ -59,13 +60,13 @@ npm run dev
 ###### Build project first
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ###### Start project
 
 ```bash
-npm run start
+pnpm run start
 ```
 
 ## Containerized setup
