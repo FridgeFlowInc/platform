@@ -26,17 +26,26 @@ def get_products_stats(
     entries = ProductLog.objects.all().filter(
         timestamp__date__range=(date_after, date_before)
     )
-    daily_change = defaultdict(float)
+    positive_daily_change = defaultdict(float)
+    negative_daily_change = defaultdict(float)
     for entry in entries:
         day = entry.timestamp.date()
-        daily_change[day] += entry.quantity_change
-
-    return [
-        schemas.DailyChangeOut(
-            date=day, quantity_change_for_date=daily_change[day]
+        if entry.quantity_change >= 0:
+            positive_daily_change[day] += entry.quantity_change
+        else:
+            negative_daily_change -= entry.quantity_change
+    delta = datetime.timedelta(days=1)
+    daily_changes = []
+    day = date_after
+    while day <= date_before:
+        daily_changes.append(
+            schemas.DailyChangeOut(
+                date=day, positive_quantity_change_for_date=positive_daily_change[day],
+                negative_quantity_change_for_date=negative_daily_change[day]
+            )
         )
-        for day in daily_change
-    ]
+        day += delta
+    return daily_changes
 
 
 @router.post("/search_by_qr", response=list[schemas.ProductOut])
@@ -120,17 +129,25 @@ def get_product_stats(
     entries = ProductLog.objects.filter(product_id=product_id).filter(
         timestamp__date__range=(date_after, date_before)
     )
-    daily_change = defaultdict(float)
+    positive_daily_change = defaultdict(float)
+    negative_daily_change = defaultdict(float)
     for entry in entries:
         day = entry.timestamp.date()
-        daily_change[day] += entry.quantity_change
-
-    daily_changes = [
-        schemas.DailyChangeOut(
-            date=day, quantity_change_for_date=daily_change[day]
+        if entry.quantity_change >= 0:
+            positive_daily_change[day] += entry.quantity_change
+        else:
+            negative_daily_change[day] -= entry.quantity_change
+    delta = datetime.timedelta(days=1)
+    daily_changes = []
+    day = date_after
+    while day <= date_before:
+        daily_changes.append(
+            schemas.DailyChangeOut(
+                date=day, positive_quantity_change_for_date=positive_daily_change[day],
+                negative_quantity_change_for_date=negative_daily_change[day]
+            )
         )
-        for day in daily_change
-    ]
+        day += delta
 
     return schemas.ProductStatsOut(
         product_id=product_id, quantity_changes=daily_changes
