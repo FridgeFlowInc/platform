@@ -1,0 +1,5 @@
+/* Set custom font to toaster */
+.toaster,
+.toaster * {
+  font-family: 'Nunito', sans-serif !important;
+}

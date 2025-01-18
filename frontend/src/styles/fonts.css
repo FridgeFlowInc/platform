@@ -1,8 +1,10 @@
+/* Custom font faces */
 @font-face {
   font-family: 'Nunito';
   src:
     local('Nunito'),
-    url(@/assets/fonts/Nunito/Nunito-VariableFont_wght.ttf) format('woff2-variations');
+    url(@/assets/fonts/Nunito/Nunito-VariableFont_wght.ttf)
+      format('woff2-variations');
   font-weight: 600 900;
   font-style: normal;
 }
