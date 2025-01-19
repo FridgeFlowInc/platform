@@ -35,14 +35,10 @@ jobs:
       run: |
         echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-    - name: Change directory to frontend
-      run: |
-        cd ./frontend
-
     - name: Build image
       run: |
-        docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:latest ./
-        docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:${{ github.sha }} ./
+        docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:latest ./frontend
+        docker build -t ghcr.io/${{ env.REPO_NAME }}/frontend:${{ github.sha }} ./frontend
 
     - name: Push image
       run: |
