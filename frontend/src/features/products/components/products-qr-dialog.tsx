@@ -47,8 +47,9 @@ export function ProductsViewQRDialog({
 
     const canvas = document.createElement('canvas')
     const svgSize = 256
-    canvas.width = svgSize
-    canvas.height = svgSize
+    const borderSize = 5
+    canvas.width = svgSize + 2 * borderSize
+    canvas.height = svgSize + 2 * borderSize
     const ctx = canvas.getContext('2d')
 
     const img = new Image()
@@ -58,7 +59,13 @@ export function ProductsViewQRDialog({
     const url = URL.createObjectURL(svgBlob)
 
     img.onload = () => {
-      ctx?.drawImage(img, 0, 0, svgSize, svgSize)
+      if (ctx) {
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        ctx.drawImage(img, borderSize, borderSize, svgSize, svgSize)
+      }
+
       URL.revokeObjectURL(url)
 
       const pngUrl = canvas.toDataURL('image/png')
