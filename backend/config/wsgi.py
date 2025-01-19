@@ -1,4 +1,4 @@
-"""WSGI config for fridgeflow-backend."""
+"""WSGI config for fridgeflow backend."""
 
 import os
 
