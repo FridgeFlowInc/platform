@@ -13,7 +13,7 @@ def create_log_on_create_update(sender, instance: Product, **kwargs) -> None:  #
 
         ProductLog.objects.create(
             product_id=instance.id,
-            quantity_change=previous_instance.quantity - instance.quantity,
+            quantity_change=instance.quantity - previous_instance.quantity,
             action_type="U",
         )
     except ObjectDoesNotExist:
