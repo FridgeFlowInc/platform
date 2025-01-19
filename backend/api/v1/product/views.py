@@ -40,8 +40,9 @@ def get_products_stats(
     while day <= date_before:
         daily_changes.append(
             schemas.DailyChangeOut(
-                date=day, positive_quantity_change_for_date=positive_daily_change[day],
-                negative_quantity_change_for_date=negative_daily_change[day]
+                date=day,
+                positive_quantity_change_for_date=positive_daily_change[day],
+                negative_quantity_change_for_date=negative_daily_change[day],
             )
         )
         day += delta
@@ -67,11 +68,6 @@ def create_product(
     product = Product(**product.dict())
     product.full_clean()
     product.save()
-    ProductLog.objects.create(
-        product_id=product.id,
-        quantity_change=product.quantity,
-        action_type="C",
-    )
 
     return status.CREATED, product
 
@@ -88,11 +84,7 @@ def update_product(
     product: schemas.ProductIn,
 ) -> Product:
     product_obj = get_object_or_404(Product, id=product_id)
-    ProductLog.objects.create(
-        product_id=product_id,
-        quantity_change=product.quantity - product_obj.quantity,
-        action_type="U",
-    )
+
     for attr, value in product.dict().items():
         setattr(product_obj, attr, value)
     product_obj.save()
@@ -109,11 +101,6 @@ def update_product(
 )
 def delete_product(request: HttpRequest, product_id: uuid.UUID) -> None:
     product = get_object_or_404(Product, id=product_id)
-    ProductLog.objects.create(
-        product_id=product_id,
-        quantity_change=-(product.quantity),
-        action_type="D",
-    )
     product.delete()
 
     return status.NO_CONTENT, None
@@ -143,8 +130,9 @@ def get_product_stats(
     while day <= date_before:
         daily_changes.append(
             schemas.DailyChangeOut(
-                date=day, positive_quantity_change_for_date=positive_daily_change[day],
-                negative_quantity_change_for_date=negative_daily_change[day]
+                date=day,
+                positive_quantity_change_for_date=positive_daily_change[day],
+                negative_quantity_change_for_date=negative_daily_change[day],
             )
         )
         day += delta
