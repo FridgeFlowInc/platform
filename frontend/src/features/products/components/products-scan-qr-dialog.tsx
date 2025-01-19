@@ -1,4 +1,4 @@
-import { QrReader } from 'react-qr-reader'
+import QrReader from 'react-qr-reader'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -7,6 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog'
 
 interface Props {
@@ -28,21 +29,19 @@ export function ScanQRDialog({ open, onOpenChange }: Props) {
           <DialogTitle>Сканирование QR</DialogTitle>
           <DialogDescription>Наведите камеру на qr-код.</DialogDescription>
         </DialogHeader>
-        <div className='mt-4'>
+        <div className='mt-4 flex justify-center items-center'>
           <QrReader
-            onResult={(result) => {
-              if (result) {
-                handleScan(result.getText())
-              }
-            }}
-            constraints={{ facingMode: 'environment' }}
-            className='w-full'
+            delay={false}
+            facingMode='environment'
+            resolution={1080}
+            style={{ width: '300px' }}
+            onScan={handleScan}
           />
         </div>
         <DialogFooter className='gap-2 sm:gap-0'>
-          <Button onClick={() => onOpenChange(false)} variant='outline'>
-            Закрыть
-          </Button>
+          <DialogClose asChild>
+            <Button variant='outline'>Закрыть</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
