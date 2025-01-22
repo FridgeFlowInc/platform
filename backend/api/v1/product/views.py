@@ -28,15 +28,19 @@ def get_products_stats(
     )
     positive_daily_change = defaultdict(float)
     negative_daily_change = defaultdict(float)
+
     for entry in entries:
         day = entry.timestamp.date()
+
         if entry.quantity_change >= 0:
             positive_daily_change[day] += entry.quantity_change
         else:
-            negative_daily_change -= entry.quantity_change
+            negative_daily_change[day] -= entry.quantity_change
+
     delta = datetime.timedelta(days=1)
     daily_changes = []
     day = date_after
+
     while day <= date_before:
         daily_changes.append(
             schemas.DailyChangeOut(
@@ -46,6 +50,7 @@ def get_products_stats(
             )
         )
         day += delta
+
     return daily_changes
 
 
