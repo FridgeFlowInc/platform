@@ -41,11 +41,19 @@ export const productSchemaBase = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Невалидная дата'),
   notes: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null(), z.undefined()])
+    z.union([
+      z.string().max(1000, 'Не больше 1000 символов'),
+      z.null(),
+      z.undefined(),
+    ])
   ),
   allergens: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null(), z.undefined()])
+    z.union([
+      z.string().max(1000, 'Не больше 1000 символов'),
+      z.null(),
+      z.undefined(),
+    ])
   ),
 })
 
