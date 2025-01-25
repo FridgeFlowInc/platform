@@ -8,15 +8,21 @@ import { Product } from '../data/schema'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setOpen: (popup: string) => void
   currentRow: Product
   refetchProducts: () => void
+  setFromQrCodePopup: (fromQrCodePopup: boolean) => void
+  fromQrCodePopup: boolean
 }
 
 export function ProductDeleteDialog({
   currentRow,
   open,
+  setOpen,
   onOpenChange,
   refetchProducts,
+  setFromQrCodePopup,
+  fromQrCodePopup,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -43,8 +49,18 @@ export function ProductDeleteDialog({
       open={open}
       onOpenChange={(v) => {
         onOpenChange(v)
+        setIsLoading(false)
+        if (fromQrCodePopup) {
+          setOpen('scan-qr')
+        }
+        if (fromQrCodePopup && !v) {
+          setFromQrCodePopup(false)
+        }
       }}
-      handleConfirm={handleConfirm}
+      handleConfirm={() => {
+        setFromQrCodePopup(false)
+        handleConfirm()
+      }}
       isLoading={isLoading}
       className='max-w-md'
       title={`Удалить продукт: ${currentRow?.name} ?`}

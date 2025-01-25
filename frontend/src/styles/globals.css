@@ -11,3 +11,8 @@
 body {
   font-family: 'Nunito', sans-serif;
 }
+
+/* hide ugly border */
+svg[viewBox='0 0 100 100'][style*='border: 35px solid rgba(0, 0, 0, 0.2)'] {
+  display: none;
+}

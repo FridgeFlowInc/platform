@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useProducts } from '../context/products-context'
 import { ProductDeleteDialog } from './products-delete-dialog'
 import { ProductsMutateDialog } from './products-mutate-dialog'
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export function ProductsDialogs({ refetchProducts }: Props) {
+  const [fromQrCodePopup, setFromQrCodePopup] = useState(false)
+
   const { open, setOpen, currentRow, setCurrentRow } = useProducts()
 
   return (
@@ -17,13 +20,21 @@ export function ProductsDialogs({ refetchProducts }: Props) {
       <ScanQRDialog
         key='scan-qr'
         open={open === 'scan-qr'}
-        onOpenChange={() => setOpen('scan-qr')}
+        setOpen={setOpen}
+        onOpenChange={() => {
+          setOpen('scan-qr')
+        }}
+        setFromQrCodePopup={setFromQrCodePopup}
+        setCurrentRow={setCurrentRow}
       />
       <ProductsMutateDialog
         key='product-create'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
         refetchProducts={refetchProducts}
+        setOpen={setOpen}
+        setFromQrCodePopup={setFromQrCodePopup}
+        fromQrCodePopup={fromQrCodePopup}
       />
 
       {currentRow && (
@@ -49,8 +60,9 @@ export function ProductsDialogs({ refetchProducts }: Props) {
                 setCurrentRow(null)
               }, 500)
             }}
-            currentRow={currentRow}
             refetchProducts={refetchProducts}
+            setFromQrCodePopup={setFromQrCodePopup}
+            fromQrCodePopup={fromQrCodePopup}
           />
 
           <ProductsViewQRDialog
@@ -76,6 +88,9 @@ export function ProductsDialogs({ refetchProducts }: Props) {
             }}
             currentRow={currentRow}
             refetchProducts={refetchProducts}
+            setOpen={setOpen}
+            setFromQrCodePopup={setFromQrCodePopup}
+            fromQrCodePopup={fromQrCodePopup}
           />
         </>
       )}

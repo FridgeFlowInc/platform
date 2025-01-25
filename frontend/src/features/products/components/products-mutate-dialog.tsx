@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -29,14 +29,16 @@ import {
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
+import { useProducts } from '@/features/products/context/products-context'
 import { Product } from '../data/schema'
 import { productSchemaBase } from '../data/schema'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Product
   refetchProducts: () => void
+  setFromQrCodePopup: (fromQrCodePopup: boolean) => void
+  fromQrCodePopup: boolean
 }
 
 type ProductsForm = z.infer<typeof productSchemaBase>
@@ -44,10 +46,13 @@ type ProductsForm = z.infer<typeof productSchemaBase>
 export function ProductsMutateDialog({
   open,
   onOpenChange,
-  currentRow,
   refetchProducts,
+  setFromQrCodePopup,
+  fromQrCodePopup,
 }: Props) {
-  const isUpdate = !!currentRow
+  const { setOpen, currentRow } = useProducts()
+
+  const [isUpdate, setIsUpdate] = useState(!!currentRow)
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<ProductsForm>({
@@ -68,20 +73,34 @@ export function ProductsMutateDialog({
     },
   })
 
+  useEffect(() => {
+    if (currentRow) {
+      setIsUpdate(true)
+      form.reset(currentRow)
+    }
+  }, [currentRow])
+
   const onSubmit = async (data: ProductsForm) => {
     setIsLoading(true)
 
     await delay(200)
-    if (currentRow) {
+    if (currentRow && currentRow.id) {
       await productUpdate(currentRow.id, JSON.stringify(data))
     } else {
       await productCreate(JSON.stringify(data))
     }
 
     refetchProducts()
+
     onOpenChange(false)
     form.reset()
+    if (fromQrCodePopup) {
+      setOpen('scan-qr')
+      setFromQrCodePopup(false)
+    }
+
     toast.success(isUpdate ? 'Продукт обновлен' : 'Продукт создан')
+
     setIsLoading(false)
   }
 
@@ -91,6 +110,13 @@ export function ProductsMutateDialog({
       onOpenChange={(v) => {
         onOpenChange(v)
         if (!v) form.reset()
+        setIsLoading(false)
+        if (fromQrCodePopup) {
+          setOpen('scan-qr')
+        }
+        if (fromQrCodePopup && !v) {
+          setFromQrCodePopup(false)
+        }
       }}
     >
       <DialogContent
