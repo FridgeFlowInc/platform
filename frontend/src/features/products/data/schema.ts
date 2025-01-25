@@ -23,15 +23,15 @@ export const productSchemaBase = z.object({
     .min(1, 'Обязательное поле'),
   nutritional_value: z.preprocess(
     (val) => (val === '' || val === 0 ? null : val),
-    z.union([z.number(), z.string(), z.null()])
+    z.union([z.number(), z.string(), z.null(), z.undefined()])
   ),
   total_net_weight: z.preprocess(
     (val) => (val === '' || val === 0 ? null : val),
-    z.union([z.number(), z.string(), z.null()])
+    z.union([z.number(), z.string(), z.null(), z.undefined()])
   ),
   total_gross_weight: z.preprocess(
     (val) => (val === '' || val === 0 ? null : val),
-    z.union([z.number(), z.string(), z.null()])
+    z.union([z.number(), z.string(), z.null(), z.undefined()])
   ),
   manufacture_date: z
     .string({ message: 'Обязательное поле' })
@@ -41,11 +41,11 @@ export const productSchemaBase = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Невалидная дата'),
   notes: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null()])
+    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null(), z.undefined()])
   ),
   allergens: z.preprocess(
     (val) => (val === '' ? null : val),
-    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null()])
+    z.union([z.string().max(1000, 'Не больше 1000 символов'), z.null(), z.undefined()])
   ),
 })
 
