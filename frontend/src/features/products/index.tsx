@@ -40,7 +40,7 @@ export default function Products() {
 
       <Main>
         <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap gap-x-4'>
-          <h2 className='text-2xl font-bold tracking-tight mt-[5px]'>
+          <h2 className='text-2xl font-bold tracking-tight mt-[6px]'>
             Продукты
           </h2>
           <ProductsPrimaryButtons />

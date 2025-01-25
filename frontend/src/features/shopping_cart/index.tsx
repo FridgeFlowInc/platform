@@ -41,7 +41,7 @@ export default function ShoppingCardProducts() {
       <Main>
         <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap gap-x-4'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight mt-[5px]'>
+            <h2 className='text-2xl font-bold tracking-tight mt-[6px]'>
               Корзина
             </h2>
           </div>
