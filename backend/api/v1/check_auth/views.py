@@ -1,5 +1,4 @@
 from http import HTTPStatus as status
-from typing import Literal
 
 from django.http import HttpRequest
 from ninja import Router
@@ -19,5 +18,5 @@ router = Router(tags=["check_auth"])
 )
 def check_auth_index(
     request: HttpRequest,
-) -> tuple[Literal[status.NO_CONTENT], None]:
+) -> tuple[int, None]:
     return status.NO_CONTENT, None

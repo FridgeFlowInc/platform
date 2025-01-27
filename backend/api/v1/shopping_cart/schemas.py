@@ -1,3 +1,4 @@
+from typing import ClassVar
 from uuid import UUID
 
 from ninja import ModelSchema
@@ -17,4 +18,4 @@ class ShoppingCartProductIn(ModelSchema):
     class Meta:
         model = ShoppingCartProduct
         fields = "__all__"
-        exclude = [ShoppingCartProduct.id.field.name]  # noqa: RUF012
+        exclude: ClassVar[list[str]] = [ShoppingCartProduct.id.field.name]

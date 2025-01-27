@@ -1,4 +1,5 @@
 import datetime
+from typing import ClassVar
 from uuid import UUID
 
 from ninja import ModelSchema, Schema
@@ -19,7 +20,7 @@ class ProductIn(ModelSchema):
     class Meta:
         model = Product
         fields = "__all__"
-        exclude = [Product.id.field.name]  # noqa: RUF012
+        exclude: ClassVar[list[str]] = [Product.id.field.name]
 
 
 class ProductLogOut(ModelSchema):
