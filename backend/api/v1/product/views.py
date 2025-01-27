@@ -8,7 +8,6 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
-from api.v1 import schemas as global_schemas
 from api.v1.product import schemas
 from apps.product.log.models import ProductLog
 from apps.product.models import Product
@@ -104,10 +103,7 @@ def update_product(
 
 @router.delete(
     "/{product_id}",
-    response={
-        status.NO_CONTENT: None,
-        status.NOT_FOUND: global_schemas.NotFoundError,
-    },
+    response={status.NO_CONTENT: None},
 )
 def delete_product(
     request: HttpRequest, product_id: uuid.UUID
