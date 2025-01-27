@@ -19,7 +19,6 @@ export default function ShoppingCardProducts() {
     isLoading,
     isFetching,
     error,
-    refetch,
   } = useQuery({
     queryKey: ['shoppingCartProductsGet'],
     queryFn: async () => {
@@ -60,7 +59,7 @@ export default function ShoppingCardProducts() {
         </div>
       </Main>
 
-      <ProductsDialogs refetchShoppingCartProducts={refetch} />
+      <ProductsDialogs />
     </ProductsProvider>
   )
 }

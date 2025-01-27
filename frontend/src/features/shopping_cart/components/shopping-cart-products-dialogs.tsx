@@ -3,11 +3,7 @@ import { ShoppingCartProductDeleteDialog } from './shopping-cart-products-delete
 import { ShoppingCartProductsMutateDialog } from './shopping-cart-products-mutate-dialog'
 import { ShoppingCartProductsViewDialog } from './shopping-cart-products-view-dialog'
 
-interface Props {
-  refetchShoppingCartProducts: () => void
-}
-
-export function ProductsDialogs({ refetchShoppingCartProducts }: Props) {
+export function ProductsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useProducts()
 
   return (
@@ -16,7 +12,6 @@ export function ProductsDialogs({ refetchShoppingCartProducts }: Props) {
         key='shopping-cart-product-create'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
-        refetchShoppingCartProducts={refetchShoppingCartProducts}
       />
 
       {currentRow && (
@@ -43,7 +38,6 @@ export function ProductsDialogs({ refetchShoppingCartProducts }: Props) {
               }, 500)
             }}
             currentRow={currentRow}
-            refetchShoppingCartProducts={refetchShoppingCartProducts}
           />
 
           <ShoppingCartProductDeleteDialog
@@ -56,7 +50,6 @@ export function ProductsDialogs({ refetchShoppingCartProducts }: Props) {
               }, 500)
             }}
             currentRow={currentRow}
-            refetchShoppingCartProducts={refetchShoppingCartProducts}
           />
         </>
       )}
