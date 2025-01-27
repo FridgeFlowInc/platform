@@ -12,7 +12,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { handleServerError } from '@/utils/handle-server-error'
 import { ThemeProvider } from './context/theme-context'
 import './index.css'
-// Generated Routes
 import { routeTree } from './routeTree.gen'
 import './styles/fonts.css'
 import './styles/globals.css'
@@ -22,53 +21,76 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        // eslint-disable-next-line no-console
-        if (import.meta.env.DEV) console.log({ failureCount, error })
+        if (import.meta.env.DEV) {
+          console.log({ failureCount, error })
+        }
 
-        if (failureCount >= 0 && import.meta.env.DEV) return false
-        if (failureCount > 3 && import.meta.env.PROD) return false
+        if (failureCount >= 3) return false
 
         return !(
           error instanceof AxiosError &&
-          [401, 403].includes(error.response?.status ?? 0)
+          error.response?.status >= 400 &&
+          error.response?.status < 500
         )
       },
       refetchOnWindowFocus: import.meta.env.PROD,
-      staleTime: 10 * 1000, // 10s
+      staleTime: 10 * 1000, // 10 seconds
     },
     mutations: {
       onError: (error) => {
-        handleServerError(error)
-
         if (error instanceof AxiosError) {
-          if (error.response?.status === 304) {
-            toast.warning('Данные не изменены')
+          const status = error.response?.status
+          switch (status) {
+            case 401:
+              toast.warning('Войдите в аккаунт')
+              useAuthStore.getState().auth.resetAccessToken()
+              router.navigate({ to: '/sign-in' })
+              break
+            case 422:
+              toast.warning('Невалидные данные')
+              break
+            case 500:
+              toast.error('Ошибка сервера')
+              break
+            default:
+              toast.error('Произошла ошибка')
+              break
           }
+        } else {
+          toast.error('Непредвиденная ошибка')
         }
+
+        handleServerError(error)
       },
     },
   },
   queryCache: new QueryCache({
     onError: (error) => {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          toast.warning('Авторизуйтесь')
-          useAuthStore.getState().auth.resetAccessToken()
-          router.navigate({ to: '/sign-in' })
+        const status = error.response?.status
+        switch (status) {
+          case 401:
+            toast.warning('Войдите в аккаунт')
+            useAuthStore.getState().auth.resetAccessToken()
+            router.navigate({ to: '/sign-in' })
+            break
+          case 422:
+            toast.warning('Невалидные данные')
+            break
+          case 500:
+            toast.error('Ошибка сервера')
+            break
+          default:
+            toast.error('Произошла ошибка')
+            break
         }
-        if (error.response?.status === 500) {
-          toast.error('Ошибка сервера')
-          router.navigate({ to: '/500' })
-        }
-        if (error.response?.status === 403) {
-          // router.navigate("/forbidden", { replace: true });
-        }
+      } else {
+        toast.error('Непредвиденная ошибка')
       }
     },
   }),
 })
 
-// Create a new router instance
 const router = createRouter({
   routeTree,
   context: { queryClient },
@@ -76,21 +98,19 @@ const router = createRouter({
   defaultPreloadStaleTime: 0,
 })
 
-// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-// Render the app
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
+        <ThemeProvider defaultTheme='light' storageKey='fridgeflow-ui-theme'>
           <RouterProvider router={router} />
         </ThemeProvider>
       </QueryClientProvider>
