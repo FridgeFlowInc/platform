@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader } from 'lucide-react'
 import { toast } from 'sonner'
 import { shoppingCartProductCreate } from '@/api/v1/shopping_cart/create'
@@ -35,7 +35,6 @@ interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   currentRow?: shoppingCartProduct
-  refetchShoppingCartProducts: () => void
 }
 
 type ProductsForm = z.infer<typeof shoppingCartProductSchemaBase>
@@ -44,35 +43,38 @@ export function ShoppingCartProductsMutateDialog({
   open,
   onOpenChange,
   currentRow,
-  refetchShoppingCartProducts,
 }: Props) {
+  const queryClient = useQueryClient()
   const isUpdate = !!currentRow
-  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<ProductsForm>({
     resolver: zodResolver(shoppingCartProductSchemaBase),
     defaultValues: currentRow ?? {
-      name: undefined,
-      quantity: 1,
-      unit: 'штуки',
+      name: '',
+      quantity: '',
+      unit: '',
+    },
+  })
+
+  const mutation = useMutation({
+    mutationFn: async (data: ProductsForm) => {
+      await delay(200)
+      if (isUpdate && currentRow) {
+        return shoppingCartProductUpdate(currentRow.id, JSON.stringify(data))
+      } else {
+        return shoppingCartProductCreate(JSON.stringify(data))
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['shoppingCartProductsGet'])
+      onOpenChange(false)
+      form.reset()
+      toast.success(isUpdate ? 'Продукт обновлен' : 'Продукт создан')
     },
   })
 
   const onSubmit = async (data: ProductsForm) => {
-    setIsLoading(true)
-
-    await delay(200)
-    if (currentRow) {
-      await shoppingCartProductUpdate(currentRow.id, JSON.stringify(data))
-    } else {
-      await shoppingCartProductCreate(JSON.stringify(data))
-    }
-
-    refetchShoppingCartProducts()
-    onOpenChange(false)
-    form.reset()
-    toast.success(isUpdate ? 'Продукт обновлен' : 'Продукт создан')
-    setIsLoading(false)
+    mutation.mutate(data)
   }
 
   return (
@@ -131,7 +133,7 @@ export function ShoppingCartProductsMutateDialog({
                       />
                     </FormControl>
                     <FormDescription>
-                      Введите количество продукта (число).
+                      Введите количество продукта.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -142,12 +144,12 @@ export function ShoppingCartProductsMutateDialog({
                 name='unit'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ед. измерения</FormLabel>
+                    <FormLabel>Единицы измерения</FormLabel>
                     <FormControl>
-                      <Input placeholder='Ед. измерения' {...field} />
+                      <Input placeholder='Единицы измерения' {...field} />
                     </FormControl>
                     <FormDescription>
-                      Введите единицу измерения (макс. 50 символов).
+                      Введите единицы измерения (макс. 50 символов).
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -157,11 +159,15 @@ export function ShoppingCartProductsMutateDialog({
           </Form>
         </ScrollArea>
         <DialogFooter>
-          <DialogClose asChild disabled={isLoading}>
+          <DialogClose asChild disabled={mutation.isPending}>
             <Button variant='outline'>Закрыть</Button>
           </DialogClose>
-          <Button type='submit' form='products-form' disabled={isLoading}>
-            {isLoading ? (
+          <Button
+            type='submit'
+            form='products-form'
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? (
               <Loader className='animate-spin' />
             ) : isUpdate ? (
               'Обновить'

@@ -10,7 +10,11 @@ export const columns: ColumnDef<shoppingCartProduct>[] = [
       <DataTableColumnHeader column={column} title='Продукт' />
     ),
     cell: ({ row }) => (
-      <div className='flex w-[100px]'>{row.getValue('name')}</div>
+      <div className='flex items-center space-x-2'>
+        <span className='w-full truncate font-medium max-w-[220px] sm:max-w-[500px] md:max-w-[430px] lg:max-w-[600px]'>
+          {row.getValue('name')}
+        </span>
+      </div>
     ),
     enableSorting: true,
     enableHiding: false,

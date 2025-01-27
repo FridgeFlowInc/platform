@@ -21,7 +21,7 @@ export default function ShoppingCardProducts() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['shoppingCartProducts'],
+    queryKey: ['shoppingCartProductsGet'],
     queryFn: async () => {
       await delay(250)
       const result = await shoppingCartProductList()
@@ -53,7 +53,9 @@ export default function ShoppingCardProducts() {
           ) : error ? (
             <div>Ошибка: {error.message}</div>
           ) : (
-            <DataTable data={shoppingCartProducts} columns={columns} />
+            <>
+              <DataTable data={shoppingCartProducts} columns={columns} />
+            </>
           )}
         </div>
       </Main>

@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { shoppingCartProductDelete } from '@/api/v1/shopping_cart/delete'
-import { delay } from '@/lib/delay'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { shoppingCartProduct } from '../data/schema'
 
@@ -9,30 +8,29 @@ interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   currentRow: shoppingCartProduct
-  refetchShoppingCartProducts: () => void
 }
 
 export function ShoppingCartProductDeleteDialog({
   currentRow,
   open,
   onOpenChange,
-  refetchShoppingCartProducts,
 }: Props) {
-  const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
 
-  const handleConfirm = async () => {
-    setIsLoading(true)
-    await delay(200)
-    try {
-      await shoppingCartProductDelete(currentRow.id)
+  const mutation = useMutation({
+    mutationFn: () => shoppingCartProductDelete(currentRow.id),
+    onSuccess: () => {
       toast.success('Продукт удалён')
-      refetchShoppingCartProducts()
-    } catch (error) {
-      toast.error('Ошибка при удалении продукта')
-    } finally {
-      setIsLoading(false)
+      queryClient.invalidateQueries(['shoppingCartProductsGet'])
       onOpenChange(false)
-    }
+    },
+    onError: () => {
+      toast.error('Ошибка при удалении продукта')
+    },
+  })
+
+  const handleConfirm = () => {
+    mutation.mutate()
   }
 
   return (
@@ -44,9 +42,9 @@ export function ShoppingCartProductDeleteDialog({
         onOpenChange(v)
       }}
       handleConfirm={handleConfirm}
-      isLoading={isLoading}
+      isLoading={mutation.isPending}
       className='max-w-md'
-      title={`Удалить продукт: ${currentRow?.name} ?`}
+      title={`Удалить продукт?`}
       desc={
         <>
           Вы хотите удалить продукт <strong>{currentRow?.name}</strong>. <br />

@@ -25,8 +25,8 @@ export function ShoppingCartProductsViewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-h-[90vh] overflow-y-auto max-w-full sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Продукт: {currentRow.name}</DialogTitle>
-          <DialogDescription>Детали текущего продукта:</DialogDescription>
+          <DialogTitle>Продукт</DialogTitle>
+          <DialogDescription>Детали текущего продукта</DialogDescription>
         </DialogHeader>
         <ScrollArea className='h-[26.25rem] w-full pr-4 -mr-4 py-1'>
           <div className='space-y-4'>
@@ -39,7 +39,7 @@ export function ShoppingCartProductsViewDialog({
               <p>{currentRow?.quantity || '—'}</p>
             </div>
             <div>
-              <h4 className='font-bold'>Ед. измерения</h4>
+              <h4 className='font-bold'>Единицы измерения</h4>
               <p>{currentRow?.unit || '—'}</p>
             </div>
           </div>
