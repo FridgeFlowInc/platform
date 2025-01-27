@@ -30,9 +30,9 @@ export const useAuthStore = create<AuthState>((set) => {
           ...state,
           auth: {
             ...state.auth,
-            accessToken: accessToken,
             isAuthenticated: true,
             checkedAuthentication: true,
+            accessToken: accessToken,
           },
         }))
       },
@@ -42,9 +42,9 @@ export const useAuthStore = create<AuthState>((set) => {
           ...state,
           auth: {
             ...state.auth,
-            accessToken: '',
             isAuthenticated: false,
             checkedAuthentication: true,
+            accessToken: '',
           },
         }))
       },
