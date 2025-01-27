@@ -41,8 +41,10 @@ export function ProfileDropdown() {
           <DropdownMenuItem
             onClick={() => {
               useAuthStore.getState().auth.resetAccessToken()
+              useAuthStore.getState().auth.preLogOut()
               toast.success('Вы успешно вышли')
               navigate({ to: '/sign-in' })
+              useAuthStore.getState().auth.logOut()
             }}
           >
             <LogOut />
