@@ -2,6 +2,7 @@ import datetime
 import uuid
 from collections import defaultdict
 from http import HTTPStatus as status
+from datetime import date, timedelta
 
 from django.db.models.manager import BaseManager
 from django.http import HttpRequest
@@ -13,6 +14,30 @@ from apps.product.log.models import ProductLog
 from apps.product.models import Product
 
 router = Router(tags=["product"])
+
+
+@router.get(
+    "/notifications",
+    response={status.OK: schemas.NotificationsOut}
+)
+def get_notifications(
+    request: HttpRequest
+) -> tuple[int, schemas.NotificationsOut]:
+    expired_products = Product.objects.all().filter(expiration_date__lt = date.today())
+    almost_expired_products = Product.objects.all().filter(expiration_date = (date.today() + timedelta(days=1)))
+    
+    expired_product_info_list = [
+        schemas.ProductInfoShort(id=product.id, name=product.name) 
+        for product in expired_products
+    ]
+    almost_expired_products_info_list = [
+        schemas.ProductInfoShort(id=product.id, name=product.name) 
+        for product in almost_expired_products
+    ]
+
+    return status.OK, schemas.NotificationsOut(
+        expired = expired_product_info_list, 
+        expires_in_a_day = almost_expired_products_info_list)
 
 
 @router.get("/analytics", response=list[schemas.DailyChangeOut])
@@ -107,7 +132,7 @@ def update_product(
 )
 def delete_product(
     request: HttpRequest, product_id: uuid.UUID
-) -> tuple[int, None]:
+) -> tuple[int, None]:  
     product = get_object_or_404(Product, id=product_id)
     product.delete()
 
