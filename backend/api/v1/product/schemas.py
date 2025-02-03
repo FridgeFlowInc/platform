@@ -21,7 +21,10 @@ class ProductIn(ModelSchema):
     class Meta:
         model = Product
         fields = "__all__"
-        exclude: ClassVar[list[str]] = [Product.id.field.name, Product.timestamp.field.name]
+        exclude: ClassVar[list[str]] = [
+            Product.id.field.name,
+            Product.timestamp.field.name,
+        ]
 
 
 class ProductLogOut(ModelSchema):
@@ -42,10 +45,12 @@ class ProductStatsOut(Schema):
     product_id: UUID
     quantity_changes: list[DailyChangeOut]
 
+
 class ProductInfoShort(Schema):
     id: UUID
     name: str
-    
+
+
 class NotificationsOut(Schema):
     expired: list[ProductInfoShort]
     expires_in_a_day: list[ProductInfoShort]

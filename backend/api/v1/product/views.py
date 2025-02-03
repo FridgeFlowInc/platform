@@ -1,14 +1,15 @@
 import datetime
 import uuid
 from collections import defaultdict
+from datetime import timedelta
 from http import HTTPStatus as status
-from datetime import date, timedelta
 
+from django.db.models import F
 from django.db.models.manager import BaseManager
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from ninja import Router
-from django.db.models import F
 
 from api.v1.product import schemas
 from apps.product.log.models import ProductLog
@@ -17,41 +18,36 @@ from apps.product.models import Product
 router = Router(tags=["product"])
 
 
-@router.get(
-    "/notifications",
-    response={status.OK: schemas.NotificationsOut}
-)
+@router.get("/notifications", response={status.OK: schemas.NotificationsOut})
 def get_notifications(
-    request: HttpRequest
+    request: HttpRequest,
 ) -> tuple[int, schemas.NotificationsOut]:
-    expired_products = Product.objects.all().filter(expiration_date__lt = date.today())
-    almost_expired_products = Product.objects.all().filter(expiration_date = (date.today() + timedelta(days=1)))
-    
+    expired_products = Product.objects.all().filter(
+        expiration_date__lt=timezone.now().date()
+    )
+    almost_expired_products = Product.objects.all().filter(
+        expiration_date=(timezone.now().date() + timedelta(days=1))
+    )
+
     expired_product_info_list = [
-        schemas.ProductInfoShort(id=product.id, name=product.name) 
+        schemas.ProductInfoShort(id=product.id, name=product.name)
         for product in expired_products
     ]
     almost_expired_products_info_list = [
-        schemas.ProductInfoShort(id=product.id, name=product.name) 
+        schemas.ProductInfoShort(id=product.id, name=product.name)
         for product in almost_expired_products
     ]
 
     return status.OK, schemas.NotificationsOut(
-        expired = expired_product_info_list, 
-        expires_in_a_day = almost_expired_products_info_list)
+        expired=expired_product_info_list,
+        expires_in_a_day=almost_expired_products_info_list,
+    )
 
-@router.get(
-    "/categories",
-    response=list[str]
-)
-def get_categories(
-    request: HttpRequest
-) -> tuple[int, list[str]]:
-    categories = [
-        p.category
-        for p in Product.objects.all()
-        ]
-    
+
+@router.get("/categories", response=list[str])
+def get_categories(request: HttpRequest) -> tuple[int, list[str]]:
+    categories = [p.category for p in Product.objects.all()]
+
     return status.OK, set(categories)
 
 
@@ -88,7 +84,6 @@ def get_products_stats(
             )
         )
         day += delta
-    print('end')
     return status.OK, daily_changes
 
 
@@ -147,7 +142,7 @@ def update_product(
 )
 def delete_product(
     request: HttpRequest, product_id: uuid.UUID
-) -> tuple[int, None]:  
+) -> tuple[int, None]:
     product = get_object_or_404(Product, id=product_id)
     product.delete()
 
