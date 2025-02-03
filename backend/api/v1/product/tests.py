@@ -121,7 +121,7 @@ class ProductTest(TestCase):
                     pr[attr] = float(pr[attr])
                 except ValueError:
                     1 == 1
-        self.assertEqual(result, [expected_product_1, expected_product_2])
+        self.assertEqual(result, [expected_product_2, expected_product_1])
 
     def test_search_product(self):
         response = self.client.post("/", json=self.test_product)

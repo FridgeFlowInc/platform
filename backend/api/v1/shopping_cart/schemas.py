@@ -12,10 +12,16 @@ class ShoppingCartProductOut(ModelSchema):
     class Meta:
         model = ShoppingCartProduct
         fields = "__all__"
+        exclude: ClassVar[list[str]] = [
+            ShoppingCartProduct.timestamp.field.name
+        ]
 
 
 class ShoppingCartProductIn(ModelSchema):
     class Meta:
         model = ShoppingCartProduct
         fields = "__all__"
-        exclude: ClassVar[list[str]] = [ShoppingCartProduct.id.field.name]
+        exclude: ClassVar[list[str]] = [
+            ShoppingCartProduct.id.field.name,
+            ShoppingCartProduct.timestamp.field.name,
+        ]

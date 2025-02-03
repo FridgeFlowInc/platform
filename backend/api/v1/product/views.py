@@ -1,11 +1,14 @@
 import datetime
 import uuid
 from collections import defaultdict
+from datetime import timedelta
 from http import HTTPStatus as status
 
+from django.db.models import F
 from django.db.models.manager import BaseManager
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from ninja import Router
 
 from api.v1.product import schemas
@@ -13,6 +16,44 @@ from apps.product.log.models import ProductLog
 from apps.product.models import Product
 
 router = Router(tags=["product"])
+
+
+@router.get("/notifications", response={status.OK: schemas.NotificationsOut})
+def get_notifications(
+    request: HttpRequest,
+) -> tuple[int, schemas.NotificationsOut]:
+    expired_products = Product.objects.all().filter(
+        expiration_date__lt=timezone.now().date()
+    )
+    almost_expired_products = Product.objects.all().filter(
+        expiration_date=(timezone.now().date() + timedelta(days=1))
+    )
+
+    expired_product_info_list = [
+        schemas.ProductInfoShort(id=product.id, name=product.name)
+        for product in expired_products
+    ]
+    almost_expired_products_info_list = [
+        schemas.ProductInfoShort(id=product.id, name=product.name)
+        for product in almost_expired_products
+    ]
+
+    return status.OK, schemas.NotificationsOut(
+        expired=expired_product_info_list,
+        expires_in_a_day=almost_expired_products_info_list,
+    )
+
+
+@router.get("/categories", response=list[str])
+def get_categories(request: HttpRequest) -> tuple[int, list[str]]:
+    categories = [p.category for p in Product.objects.all()]
+    return status.OK, set(categories)
+
+
+@router.get("/manufacturers", response=list[str])
+def get_manifactorers(request: HttpRequest) -> tuple[int, list[str]]:
+    manufacturers = [p.manufacturer for p in Product.objects.all()]
+    return status.OK, set(manufacturers)
 
 
 @router.get("/analytics", response=list[schemas.DailyChangeOut])
@@ -48,7 +89,6 @@ def get_products_stats(
             )
         )
         day += delta
-
     return status.OK, daily_changes
 
 
@@ -61,7 +101,7 @@ def search_product_by_qr(
 
 @router.get("", response=list[schemas.ProductOut])
 def list_products(request: HttpRequest) -> tuple[int, BaseManager[Product]]:
-    return status.OK, Product.objects.all()
+    return status.OK, Product.objects.order_by(F("timestamp").desc())
 
 
 @router.post("", response={status.CREATED: schemas.ProductOut})
