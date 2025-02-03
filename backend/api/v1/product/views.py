@@ -39,6 +39,20 @@ def get_notifications(
         expired = expired_product_info_list, 
         expires_in_a_day = almost_expired_products_info_list)
 
+@router.get(
+    "/categories",
+    response=list[str]
+)
+def get_categories(
+    request: HttpRequest
+) -> tuple[int, list[str]]:
+    categories = [
+        p.category
+        for p in Product.objects.all()
+        ]
+    
+    return status.OK, set(categories)
+
 
 @router.get("/analytics", response=list[schemas.DailyChangeOut])
 def get_products_stats(
