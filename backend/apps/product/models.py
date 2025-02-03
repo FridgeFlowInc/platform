@@ -69,6 +69,7 @@ class Product(models.Model):
         blank=True,
         null=True,
     )
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> None:
         return f"{self.name} ({self.category})"

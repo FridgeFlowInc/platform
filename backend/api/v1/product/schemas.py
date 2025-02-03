@@ -14,13 +14,14 @@ class ProductOut(ModelSchema):
     class Meta:
         model = Product
         fields = "__all__"
+        exclude: ClassVar[list[str]] = [Product.timestamp.field.name]
 
 
 class ProductIn(ModelSchema):
     class Meta:
         model = Product
         fields = "__all__"
-        exclude: ClassVar[list[str]] = [Product.id.field.name]
+        exclude: ClassVar[list[str]] = [Product.id.field.name, Product.timestamp.field.name]
 
 
 class ProductLogOut(ModelSchema):

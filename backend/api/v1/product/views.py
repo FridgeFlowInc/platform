@@ -8,6 +8,7 @@ from django.db.models.manager import BaseManager
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
+from django.db.models import F
 
 from api.v1.product import schemas
 from apps.product.log.models import ProductLog
@@ -87,7 +88,7 @@ def get_products_stats(
             )
         )
         day += delta
-
+    print('end')
     return status.OK, daily_changes
 
 
@@ -100,7 +101,7 @@ def search_product_by_qr(
 
 @router.get("", response=list[schemas.ProductOut])
 def list_products(request: HttpRequest) -> tuple[int, BaseManager[Product]]:
-    return status.OK, Product.objects.all()
+    return status.OK, Product.objects.order_by(F("timestamp").desc())
 
 
 @router.post("", response={status.CREATED: schemas.ProductOut})
