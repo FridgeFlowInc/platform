@@ -1,6 +1,7 @@
 import uuid
 from http import HTTPStatus as status
 
+from django.db.models import F
 from django.db.models.manager import BaseManager
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -16,7 +17,9 @@ router = Router(tags=["shopping_cart"])
 def get_cart(
     request: HttpRequest,
 ) -> tuple[int, BaseManager[ShoppingCartProduct]]:
-    return status.OK, ShoppingCartProduct.objects.all()
+    return status.OK, ShoppingCartProduct.objects.order_by(
+        F("timestamp").desc()
+    )
 
 
 @router.post("", response={status.CREATED: schemas.ShoppingCartProductOut})
