@@ -158,7 +158,7 @@ export function ShoppingCartProductsMutateDialog({
             </form>
           </Form>
         </ScrollArea>
-        <DialogFooter>
+        <DialogFooter className='flex flex-wrap gap-2'>
           <DialogClose asChild disabled={mutation.isPending}>
             <Button variant='outline'>Закрыть</Button>
           </DialogClose>
