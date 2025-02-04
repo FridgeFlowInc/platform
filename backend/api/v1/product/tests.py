@@ -1,5 +1,5 @@
-import datetime
 from http import HTTPStatus as status
+from datetime import datetime, timedelta, time
 
 from django.conf import settings
 from django.test import TestCase
@@ -154,3 +154,63 @@ class ProductTest(TestCase):
         no_such_product["name"] = "no_such_name"
         response = self.client.post("/search_by_qr", json=no_such_product)
         self.assertEqual(response.json(), [])
+
+    def test_notifications(self):
+        cur_product = self.test_product.copy()
+
+        cur_product["expiration_date"] = datetime.today().strftime('%Y-%m-%d')
+        cur_product["name"] = "expired_today"
+        response = self.client.post("/", json=cur_product)
+        self.assertEqual(response.status_code, status.CREATED)
+        
+        cur_product["expiration_date"] = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+        cur_product["name"] = "one_more_day"
+        response = self.client.post("/", json=cur_product)
+        self.assertEqual(response.status_code, status.CREATED)
+        
+        cur_product["expiration_date"] = (datetime.today() + timedelta(days=2)).strftime('%Y-%m-%d')
+        cur_product["name"] = "two_more_days"
+        response = self.client.post("/", json=cur_product)
+
+        self.assertEqual(response.status_code, status.CREATED)
+        cur_product["expiration_date"] = (datetime.today() + timedelta(days=3)).strftime('%Y-%m-%d')
+        cur_product["name"] = "three_more_days"
+        response = self.client.post("/", json=cur_product)
+        self.assertEqual(response.status_code, status.CREATED)
+
+        cur_product["expiration_date"] = (datetime.today() + timedelta(days=4)).strftime('%Y-%m-%d')
+        cur_product["name"] = "not_even_close"
+        response = self.client.post("/", json=cur_product)
+        self.assertEqual(response.status_code, status.CREATED)
+
+        response = self.client.get("/notifications")
+        self.assertEqual(response.status_code, status.OK)
+
+        today = datetime.combine(datetime.now(), time.min)
+        exp1 = {
+            "name": "expired_today",
+            "level": "critical",
+            "type": "product_expiry",
+            "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+        exp2 = {
+            "name": "one_more_day",
+            "level": "high",
+            "type": "product_expiry",
+            "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+        exp3 = {
+            "name": "two_more_days",
+            "level": "average",
+            "type": "product_expiry",
+            "timestamp": (today - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+        exp4 = {
+            "name": "three_more_days",
+            "level": "average",
+            "type": "product_expiry",
+            "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+
+        print(response.json())
+        self.assertListEqual(response.json(), [exp1, exp2, exp3, exp4])
