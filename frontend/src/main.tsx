@@ -46,6 +46,9 @@ const queryClient = new QueryClient({
               useAuthStore.getState().auth.resetAccessToken()
               router.navigate({ to: '/sign-in' })
               break
+            case 404:
+              toast.warning('Элемент не найден')
+              break
             case 422:
               toast.warning('Невалидные данные')
               break
@@ -73,6 +76,9 @@ const queryClient = new QueryClient({
             toast.warning('Войдите в аккаунт')
             useAuthStore.getState().auth.resetAccessToken()
             router.navigate({ to: '/sign-in' })
+            break
+          case 404:
+            toast.warning('Элемент не найден')
             break
           case 422:
             toast.warning('Невалидные данные')

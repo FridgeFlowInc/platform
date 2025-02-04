@@ -1,7 +1,13 @@
+import { useState } from 'react'
+import { format } from 'date-fns'
 import { useQuery } from '@tanstack/react-query'
+import { CalendarIcon } from 'lucide-react'
 import { Area, AreaChart, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { analyticsGet } from '@/api/v1/analytics'
 import { delay } from '@/lib/delay'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Card,
   CardContent,
@@ -10,6 +16,11 @@ import {
   CardDescription,
 } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -28,24 +39,31 @@ const chartConfig = {
 }
 
 export default function Analytics() {
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    new Date(new Date().setDate(new Date().getDate() - 7))
+  )
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date())
+
+  const formatDate = (date: Date | undefined): string => {
+    if (!date) return ''
+
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+
+    return `${year}-${month}-${day}`
+  }
+
   const {
     data: analytics,
     isLoading,
     isFetching,
     error,
   } = useQuery({
-    queryKey: ['analytics'],
+    queryKey: ['analyticsGet', startDate, endDate],
     queryFn: async () => {
-      const today = new Date()
-      const dateBefore = today.toISOString().split('T')[0] // Format as YYYY-MM-DD
-      const dateAfter = new Date(today)
-      dateAfter.setDate(today.getDate() - 7)
-
       await delay(250)
-      return await analyticsGet(
-        dateAfter.toISOString().split('T')[0],
-        dateBefore
-      )
+      return await analyticsGet(formatDate(startDate), formatDate(endDate))
     },
   })
 
@@ -70,10 +88,64 @@ export default function Analytics() {
           <CardHeader>
             <CardTitle>Аналитика изменений</CardTitle>
             <CardDescription>
-              Количество добавлений и удалений за последние 7 дней
+              Выберите диапазон дат для анализа добавлений и удалений
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className='flex flex-wrap gap-2 mb-4'>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant='outline'
+                    className={cn(
+                      'w-full sm:w-[240px] justify-start text-left font-normal',
+                      !startDate && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    {startDate ? (
+                      format(startDate, 'PPP')
+                    ) : (
+                      <span>Выберите начальную дату</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0' align='start'>
+                  <Calendar
+                    mode='single'
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant='outline'
+                    className={cn(
+                      'w-full sm:w-[240px] justify-start text-left font-normal',
+                      !endDate && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    {endDate ? (
+                      format(endDate, 'PPP')
+                    ) : (
+                      <span>Выберите конечную дату</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0' align='start'>
+                  <Calendar
+                    mode='single'
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
             {isLoading || isFetching ? (
               <Skeleton className='w-full h-[350px]' />
             ) : error ? (
