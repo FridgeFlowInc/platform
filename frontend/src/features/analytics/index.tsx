@@ -149,7 +149,7 @@ export default function Analytics() {
             {isLoading || isFetching ? (
               <Skeleton className='w-full h-[350px]' />
             ) : error ? (
-              <p className='text-destructive'>Ошибка загрузки данных</p>
+              <p className='text-destructive dark:text-destructive-dark'>Ошибка загрузки данных</p>
             ) : (
               <ChartContainer config={chartConfig} className='max-h-[500px]'>
                 <AreaChart data={chartData}>
