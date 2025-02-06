@@ -26,15 +26,8 @@ def get_notifications(
 ) -> tuple[int, schemas.NotoficationSchema]:
     today = timezone.now().date()
     expired_products = Product.objects.filter(expiration_date__lte=today)
-    expires_in_a_day = Product.objects.filter(
-        expiration_date=(today + timedelta(days=1))
-    )
-    almost_expired_products = Product.objects.filter(
-        expiration_date__range=(
-            today + timedelta(days=2),
-            today + timedelta(days=3),
-        )
-    )
+    expires_in_a_day = Product.objects.filter(expiration_date__lte=(today + timedelta(days=1)))
+    almost_expired_products = Product.objects.filter(expiration_date__lte=(today + timedelta(days=3)))
     result = []
     for product in expired_products:
         d = product.expiration_date

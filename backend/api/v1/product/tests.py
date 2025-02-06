@@ -193,11 +193,29 @@ class ProductTest(TestCase):
             "type": "product_expiry",
             "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
         }
+        exp1_2 = {
+            "name": "expired_today",
+            "level": "high",
+            "type": "product_expiry",
+            "timestamp": (today - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+        exp1_3 = {
+            "name": "expired_today",
+            "level": "average",
+            "type": "product_expiry",
+            "timestamp": (today - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
         exp2 = {
             "name": "one_more_day",
             "level": "high",
             "type": "product_expiry",
             "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
+        }
+        exp2_2 = {
+            "name": "one_more_day",
+            "level": "average",
+            "type": "product_expiry",
+            "timestamp": (today - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S") + 'Z'
         }
         exp3 = {
             "name": "two_more_days",
@@ -213,4 +231,4 @@ class ProductTest(TestCase):
         }
 
         print(response.json())
-        self.assertListEqual(response.json(), [exp1, exp2, exp3, exp4])
+        self.assertCountEqual(response.json(), [exp1, exp1_2, exp1_3, exp2, exp2_2, exp3, exp4])
