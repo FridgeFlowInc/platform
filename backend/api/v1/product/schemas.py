@@ -46,11 +46,8 @@ class ProductStatsOut(Schema):
     quantity_changes: list[DailyChangeOut]
 
 
-class ProductInfoShort(Schema):
-    id: UUID
+class NotoficationSchema(Schema):
     name: str
-
-
-class NotificationsOut(Schema):
-    expired: list[ProductInfoShort]
-    expires_in_a_day: list[ProductInfoShort]
+    level: str
+    type: str
+    timestamp: datetime.datetime

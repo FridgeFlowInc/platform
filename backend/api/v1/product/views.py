@@ -18,42 +18,71 @@ from apps.product.models import Product
 router = Router(tags=["product"])
 
 
-@router.get("/notifications", response={status.OK: schemas.NotificationsOut})
+@router.get(
+    "/notifications", response={status.OK: list[schemas.NotoficationSchema]}
+)
 def get_notifications(
     request: HttpRequest,
-) -> tuple[int, schemas.NotificationsOut]:
-    expired_products = Product.objects.all().filter(
-        expiration_date__lt=timezone.now().date()
+) -> tuple[int, schemas.NotoficationSchema]:
+    today = timezone.now().date()
+    expired_products = Product.objects.filter(expiration_date__lte=today)
+    expires_in_a_day = Product.objects.filter(
+        expiration_date__lte=(today + timedelta(days=1))
     )
-    almost_expired_products = Product.objects.all().filter(
-        expiration_date=(timezone.now().date() + timedelta(days=1))
+    almost_expired_products = Product.objects.filter(
+        expiration_date__lte=(today + timedelta(days=3))
     )
+    result = []
+    for product in expired_products:
+        d = product.expiration_date
+        result.append(
+            schemas.NotoficationSchema(
+                name=product.name,
+                level="critical",
+                type="product_expiry",
+                timestamp=datetime.datetime(
+                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
+                ),
+            )
+        )
+    for product in expires_in_a_day:
+        d = product.expiration_date - timedelta(days=1)
+        result.append(
+            schemas.NotoficationSchema(
+                name=product.name,
+                level="high",
+                type="product_expiry",
+                timestamp=datetime.datetime(
+                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
+                ),
+            )
+        )
+    for product in almost_expired_products:
+        d = product.expiration_date - timedelta(days=3)
+        result.append(
+            schemas.NotoficationSchema(
+                name=product.name,
+                level="average",
+                type="product_expiry",
+                timestamp=datetime.datetime(
+                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
+                ),
+            )
+        )
 
-    expired_product_info_list = [
-        schemas.ProductInfoShort(id=product.id, name=product.name)
-        for product in expired_products
-    ]
-    almost_expired_products_info_list = [
-        schemas.ProductInfoShort(id=product.id, name=product.name)
-        for product in almost_expired_products
-    ]
-
-    return status.OK, schemas.NotificationsOut(
-        expired=expired_product_info_list,
-        expires_in_a_day=almost_expired_products_info_list,
-    )
+    return status.OK, result
 
 
 @router.get("/categories", response=list[str])
 def get_categories(request: HttpRequest) -> tuple[int, list[str]]:
-    categories = [p.category for p in Product.objects.all()]
-    return status.OK, set(categories)
+    return status.OK, set(Product.objects.values_list("category", flat=True))
 
 
 @router.get("/manufacturers", response=list[str])
 def get_manifactorers(request: HttpRequest) -> tuple[int, list[str]]:
-    manufacturers = [p.manufacturer for p in Product.objects.all()]
-    return status.OK, set(manufacturers)
+    return status.OK, set(
+        Product.objects.values_list("manufacturer", flat=True)
+    )
 
 
 @router.get("/analytics", response=list[schemas.DailyChangeOut])
@@ -62,7 +91,7 @@ def get_products_stats(
     date_after: datetime.date,
     date_before: datetime.date,
 ) -> tuple[int, list[schemas.DailyChangeOut]]:
-    entries = ProductLog.objects.all().filter(
+    entries = ProductLog.objects.filter(
         timestamp__date__range=(date_after, date_before)
     )
     positive_daily_change = defaultdict(float)
