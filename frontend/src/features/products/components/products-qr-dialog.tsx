@@ -11,23 +11,19 @@ import {
   DialogTitle,
   DialogClose,
 } from '@/components/ui/dialog'
-import { Product } from '../data/schema'
+import { useProducts } from '../context/products-context'
 import { compressProduct } from '../lib/compression'
 
-// Props Interface
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: Product
 }
 
-export function ProductsViewQRDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: Props) {
+export function ProductsViewQRDialog({ open, onOpenChange }: Props) {
   const [qrValue, setQrValue] = useState<string>('')
   const svgRef = useRef(null)
+
+  const { currentRow } = useProducts()
 
   useEffect(() => {
     if (currentRow) {
@@ -84,7 +80,7 @@ export function ProductsViewQRDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-h-[90vh] overflow-y-auto max-w-full sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>QR код: {currentRow?.name}</DialogTitle>
+          <DialogTitle>QR Код</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
 
@@ -102,7 +98,7 @@ export function ProductsViewQRDialog({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className='flex flex-wrap gap-2'>
           <DialogClose asChild>
             <Button variant='outline'>Закрыть</Button>
           </DialogClose>
