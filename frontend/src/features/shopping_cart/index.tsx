@@ -1,10 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { shoppingCartProductList } from '@/api/v1/shopping_cart/list'
 import { delay } from '@/lib/delay'
-import { Header } from '@/components/layout/header'
+import { Header } from '@/components/header'
 import { Main } from '@/components/layout/main'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { ThemeSwitch } from '@/components/theme-switch'
 import { columns } from './components/columns'
 import { DataTable } from './components/data-table'
 import { ProductsDialogs } from './components/shopping-cart-products-dialogs'
@@ -30,12 +28,7 @@ export default function ShoppingCardProducts() {
 
   return (
     <ProductsProvider>
-      <Header fixed>
-        <div className='ml-auto flex items-center space-x-4'>
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
+      <Header />
 
       <Main>
         <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap gap-x-4'>
