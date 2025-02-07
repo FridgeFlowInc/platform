@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { format } from 'date-fns'
 import { useQuery } from '@tanstack/react-query'
 import { CalendarIcon } from 'lucide-react'
 import { Area, AreaChart, XAxis, YAxis, CartesianGrid } from 'recharts'
@@ -22,11 +21,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Header } from '@/components/layout/header'
+import { Header } from '@/components/header'
 import { Main } from '@/components/layout/main'
-import { NotificationsPanel } from '@/components/notifications'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { ThemeSwitch } from '@/components/theme-switch'
 
 const chartConfig = {
   positive_quantity_change_for_date: {
@@ -77,13 +73,7 @@ export default function Analytics() {
 
   return (
     <>
-      <Header>
-        <div className='ml-auto flex items-center space-x-4'>
-          <NotificationsPanel />
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
+      <Header />
 
       <Main>
         <Card>
@@ -106,7 +96,11 @@ export default function Analytics() {
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     {startDate ? (
-                      format(startDate, 'PPP')
+                      new Date(startDate).toLocaleDateString('ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
                     ) : (
                       <span>Выберите начальную дату</span>
                     )}
@@ -132,7 +126,11 @@ export default function Analytics() {
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
                     {endDate ? (
-                      format(endDate, 'PPP')
+                      new Date(endDate).toLocaleDateString('ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
                     ) : (
                       <span>Выберите конечную дату</span>
                     )}
