@@ -23,55 +23,64 @@ router = Router(tags=["product"])
 )
 def get_notifications(
     request: HttpRequest,
-) -> tuple[int, schemas.NotoficationSchema]:
+) -> tuple[int, list[schemas.NotoficationSchema]]:
     today = timezone.now().date()
-    expired_products = Product.objects.filter(expiration_date__lte=today)
-    expires_in_a_day = Product.objects.filter(
-        expiration_date__lte=(today + timedelta(days=1))
-    )
-    almost_expired_products = Product.objects.filter(
-        expiration_date__lte=(today + timedelta(days=3))
-    )
-    result = []
+    threshold_date = today + timedelta(days=3)
 
-    for product in expired_products:
-        d = product.expiration_date
-        result.append(
-            schemas.NotoficationSchema(
-                name=product.name,
-                level="critical",
-                type="product_expiry",
-                timestamp=datetime.datetime(
-                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
-                ),
-            )
-        )
-    for product in expires_in_a_day:
-        d = product.expiration_date - timedelta(days=1)
-        result.append(
-            schemas.NotoficationSchema(
-                name=product.name,
-                level="high",
-                type="product_expiry",
-                timestamp=datetime.datetime(
-                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
-                ),
-            )
-        )
-    for product in almost_expired_products:
-        d = product.expiration_date - timedelta(days=3)
-        result.append(
-            schemas.NotoficationSchema(
-                name=product.name,
-                level="average",
-                type="product_expiry",
-                timestamp=datetime.datetime(
-                    d.year, d.month, d.day, tzinfo=datetime.timezone.utc
-                ),
-            )
-        )
+    products = Product.objects.filter(expiration_date__lte=threshold_date)
 
-    return status.OK, result
+    notifications = []
+    for product in products:
+        exp_date = product.expiration_date
+
+        if exp_date <= today:
+            notifications.append(
+                schemas.NotoficationSchema(
+                    name=product.name,
+                    level="critical",
+                    type="product_expiry",
+                    timestamp=datetime.datetime(
+                        exp_date.year,
+                        exp_date.month,
+                        exp_date.day,
+                        tzinfo=datetime.UTC,
+                    ),
+                )
+            )
+        if exp_date - timedelta(days=1) <= today:
+            notifications.append(
+                schemas.NotoficationSchema(
+                    name=product.name,
+                    level="high",
+                    type="product_expiry",
+                    timestamp=datetime.datetime(
+                        exp_date.year,
+                        exp_date.month,
+                        exp_date.day,
+                        tzinfo=datetime.UTC,
+                    )
+                    - timedelta(days=1),
+                )
+            )
+        if exp_date - timedelta(days=3) <= today:
+            notifications.append(
+                schemas.NotoficationSchema(
+                    name=product.name,
+                    level="average",
+                    type="product_expiry",
+                    timestamp=datetime.datetime(
+                        exp_date.year,
+                        exp_date.month,
+                        exp_date.day,
+                        tzinfo=datetime.UTC,
+                    )
+                    - timedelta(days=3),
+                )
+            )
+
+    notifications.sort(key=lambda x: x.timestamp, reverse=True)
+
+    return status.OK, notifications
 
 
 @router.get("/categories", response=list[str])
@@ -119,6 +128,7 @@ def get_products_stats(
             )
         )
         day += delta
+
     return status.OK, daily_changes
 
 
