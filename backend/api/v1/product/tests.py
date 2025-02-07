@@ -250,7 +250,6 @@ class ProductTest(TestCase):
             "timestamp": today.strftime("%Y-%m-%dT%H:%M:%S") + "Z",
         }
 
-        print(response.json())
         self.assertCountEqual(
             response.json(), [exp1, exp1_2, exp1_3, exp2, exp2_2, exp3, exp4]
         )

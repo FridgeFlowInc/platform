@@ -25,7 +25,7 @@ class Product(models.Model):
         ],
     )
     unit = models.CharField(max_length=50)
-    nutritional_value = models.DecimalField(  # in kcals
+    nutritional_value = models.DecimalField(  # in kcals/100g
         max_digits=9,  # 7 digits + 2 decimal places
         decimal_places=2,
         blank=True,

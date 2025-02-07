@@ -19,11 +19,11 @@ router = Router(tags=["product"])
 
 
 @router.get(
-    "/notifications", response={status.OK: list[schemas.NotoficationSchema]}
+    "/notifications", response={status.OK: list[schemas.NotificationOut]}
 )
 def get_notifications(
     request: HttpRequest,
-) -> tuple[int, list[schemas.NotoficationSchema]]:
+) -> tuple[int, list[schemas.NotificationOut]]:
     today = timezone.now().date()
     threshold_date = today + timedelta(days=3)
 
@@ -35,7 +35,7 @@ def get_notifications(
 
         if exp_date <= today:
             notifications.append(
-                schemas.NotoficationSchema(
+                schemas.NotificationOut(
                     name=product.name,
                     level="critical",
                     type="product_expiry",
@@ -49,7 +49,7 @@ def get_notifications(
             )
         if exp_date - timedelta(days=1) <= today:
             notifications.append(
-                schemas.NotoficationSchema(
+                schemas.NotificationOut(
                     name=product.name,
                     level="high",
                     type="product_expiry",
@@ -64,7 +64,7 @@ def get_notifications(
             )
         if exp_date - timedelta(days=3) <= today:
             notifications.append(
-                schemas.NotoficationSchema(
+                schemas.NotificationOut(
                     name=product.name,
                     level="average",
                     type="product_expiry",
