@@ -33,6 +33,7 @@ def get_notifications(
         expiration_date__lte=(today + timedelta(days=3))
     )
     result = []
+
     for product in expired_products:
         d = product.expiration_date
         result.append(
@@ -79,7 +80,7 @@ def get_categories(request: HttpRequest) -> tuple[int, list[str]]:
 
 
 @router.get("/manufacturers", response=list[str])
-def get_manifactorers(request: HttpRequest) -> tuple[int, list[str]]:
+def get_manufactorers(request: HttpRequest) -> tuple[int, list[str]]:
     return status.OK, set(
         Product.objects.values_list("manufacturer", flat=True)
     )
