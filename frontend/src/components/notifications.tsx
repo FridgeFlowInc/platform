@@ -113,14 +113,16 @@ export function NotificationsPanel() {
       <AnimatePresence>
         {isOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className='fixed inset-0 bg-black/50 z-40'
-              onClick={() => setIsOpen(false)}
-            />
+            <div className='fixed m-0'>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className='fixed inset-0 bg-black/50 z-40'
+                onClick={() => setIsOpen(false)}
+              />
+            </div>
             <motion.div
               ref={panelRef}
               initial={{ opacity: 0, x: 300 }}
