@@ -123,9 +123,9 @@ export function NotificationsPanel() {
             />
             <motion.div
               ref={panelRef}
-              initial={{ opacity: 0, x: '100%' }}
+              initial={{ opacity: 0, x: 300 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
+              exit={{ opacity: 0, x: 300 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className='fixed inset-y-0 right-0 z-50 w-full sm:w-80 bg-background shadow-lg flex flex-col'
               style={{ top: 'env(safe-area-inset-top)' }}
