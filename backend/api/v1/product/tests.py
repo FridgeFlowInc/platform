@@ -29,7 +29,7 @@ class ProductTest(TestCase):
         self.client = TestClient(
             router,
             headers={
-                "Authorization": f"Bearer {settings.FRIDGE_PANEL_PASSWORD}",
+                "Authorization": f"Bearer {settings.FRIDGE_PANEL_PASSWORDS[0]}",
             },
         )
 

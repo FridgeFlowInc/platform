@@ -5,7 +5,7 @@ from ninja.security import HttpBearer
 
 class BearerAuth(HttpBearer):
     def authenticate(self, request: HttpRequest, token: str) -> str | None:
-        if token == settings.FRIDGE_PANEL_PASSWORD:
+        if token in settings.FRIDGE_PANEL_PASSWORDS:
             return token
 
         return None

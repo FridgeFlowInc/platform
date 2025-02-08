@@ -22,7 +22,11 @@ ALLOWED_HOSTS = env(
     default=["localhost", "127.0.0.1"],
 )
 
-FRIDGE_PANEL_PASSWORD = env("DJANGO_FRIDGE_PANEL_PASSWORD", default="password")
+FRIDGE_PANEL_PASSWORDS = env(
+    "DJANGO_FRIDGE_PANEL_PASSWORDS",
+    list,
+    default=["password1", "password2"],
+)
 
 
 # Database
