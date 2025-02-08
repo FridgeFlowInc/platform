@@ -56,8 +56,8 @@ export function ScanQRDialog({ open, onOpenChange }: Props) {
     onSuccess: () => {
       toast.success('Продукт создан')
       queryClient.invalidateQueries({ queryKey: ['productsGet'] })
-      resetState()
       onOpenChange(false)
+      resetState()
     },
   })
 
@@ -69,8 +69,8 @@ export function ScanQRDialog({ open, onOpenChange }: Props) {
     onSuccess: () => {
       toast.success('Продукт обновлен')
       queryClient.invalidateQueries({ queryKey: ['productsGet'] })
-      resetState()
       onOpenChange(false)
+      resetState()
     },
   })
 
@@ -82,8 +82,8 @@ export function ScanQRDialog({ open, onOpenChange }: Props) {
     onSuccess: () => {
       toast.success('Продукт удалён')
       queryClient.invalidateQueries({ queryKey: ['productsGet'] })
-      resetState()
       onOpenChange(false)
+      resetState()
     },
   })
 

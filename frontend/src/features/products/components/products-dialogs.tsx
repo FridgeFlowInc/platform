@@ -7,12 +7,7 @@ import { ProductsUpdateDialog } from './products-update-dialog'
 import { ProductsViewDialog } from './products-view-dialog'
 
 export function ProductsDialogs() {
-  const {
-    open,
-    setOpen,
-    currentRow,
-    setCurrentRow,
-  } = useProducts()
+  const { open, setOpen, currentRow, setCurrentRow } = useProducts()
 
   const handleClose = () => {
     setCurrentRow(null)
