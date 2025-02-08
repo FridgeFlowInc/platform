@@ -22,7 +22,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
   FormDescription,
 } from '@/components/ui/form'
@@ -100,14 +99,13 @@ export function ShoppingCartProductsMutateDialog({
             <form
               id='products-form'
               onSubmit={form.handleSubmit(onSubmit)}
-              className='space-y-5'
+              className='space-y-5 p-1'
             >
               <FormField
                 control={form.control}
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Название</FormLabel>
                     <FormControl>
                       <Input placeholder='Название' {...field} />
                     </FormControl>
@@ -123,7 +121,6 @@ export function ShoppingCartProductsMutateDialog({
                 name='quantity'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Количество</FormLabel>
                     <FormControl>
                       <Input
                         type='number'
@@ -144,7 +141,6 @@ export function ShoppingCartProductsMutateDialog({
                 name='unit'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Единицы измерения</FormLabel>
                     <FormControl>
                       <Input placeholder='Единицы измерения' {...field} />
                     </FormControl>

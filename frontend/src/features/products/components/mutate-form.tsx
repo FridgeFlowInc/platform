@@ -2,7 +2,6 @@ import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormDescription,
   FormMessage,
@@ -26,14 +25,13 @@ export const MutateForm: React.FC<MutateFormProps> = ({
       <form
         id={formId}
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-5'
+        className='space-y-5 p-1'
       >
         <FormField
           control={form.control}
           name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Название</FormLabel>
               <FormControl>
                 <Input placeholder='Название' {...field} />
               </FormControl>
@@ -50,7 +48,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='category'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Категория</FormLabel>
               <FormControl>
                 <Input placeholder='Категория' {...field} />
               </FormControl>
@@ -67,7 +64,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='manufacturer'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Производитель</FormLabel>
               <FormControl>
                 <Input placeholder='Производитель' {...field} />
               </FormControl>
@@ -84,7 +80,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='quantity'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Количество</FormLabel>
               <FormControl>
                 <Input
                   type='number'
@@ -104,7 +99,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='unit'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Единицы измерения</FormLabel>
               <FormControl>
                 <Input placeholder='Ед. измерения' {...field} />
               </FormControl>
@@ -121,7 +115,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='nutritional_value'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Пищевая ценность [ккал/100г]</FormLabel>
               <FormControl>
                 <Input
                   type='number'
@@ -143,7 +136,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='total_net_weight'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Масса нетто [граммы]</FormLabel>
               <FormControl>
                 <Input
                   type='number'
@@ -165,7 +157,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='total_gross_weight'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Масса брутто [граммы]</FormLabel>
               <FormControl>
                 <Input
                   type='number'
@@ -187,12 +178,11 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='manufacture_date'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Дата производства</FormLabel>
               <FormControl>
                 <Input type='date' {...field} />
               </FormControl>
               <FormDescription>
-                Введите дату производства [YYYY-MM-DD].
+                Введите дату производства [MM-DD-YYYY].
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -204,12 +194,11 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='expiration_date'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Срок годности</FormLabel>
               <FormControl>
                 <Input type='date' {...field} />
               </FormControl>
               <FormDescription>
-                Введите дату истечения срока годности [YYYY-MM-DD].
+                Введите дату истечения срока годности [MM-DD-YYYY].
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -221,7 +210,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='notes'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Заметки</FormLabel>
               <FormControl>
                 <Textarea placeholder='Заметки' {...field} />
               </FormControl>
@@ -238,7 +226,6 @@ export const MutateForm: React.FC<MutateFormProps> = ({
           name='allergens'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Аллергены</FormLabel>
               <FormControl>
                 <Textarea placeholder='Аллергены' {...field} />
               </FormControl>
