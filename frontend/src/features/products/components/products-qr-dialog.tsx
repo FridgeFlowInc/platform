@@ -11,19 +11,18 @@ import {
   DialogTitle,
   DialogClose,
 } from '@/components/ui/dialog'
-import { useProducts } from '../context/products-context'
 import { compressProduct } from '../lib/compression'
+import { Product } from '../data/schema'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
+  currentRow: Product
 }
 
-export function ProductsViewQRDialog({ open, onOpenChange }: Props) {
+export function ProductsViewQRDialog({ open, onOpenChange, currentRow }: Props) {
   const [qrValue, setQrValue] = useState<string>('')
   const svgRef = useRef(null)
-
-  const { currentRow } = useProducts()
 
   useEffect(() => {
     if (currentRow) {

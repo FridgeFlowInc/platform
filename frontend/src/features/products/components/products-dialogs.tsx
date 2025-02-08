@@ -1,40 +1,35 @@
-import { useState } from 'react'
 import { useProducts } from '../context/products-context'
-import { ProductDeleteDialog } from './products-delete-dialog'
-import { ProductsMutateDialog } from './products-mutate-dialog'
+import { ProductsCreateDialog } from './products-create-dialog'
+import { ProductsDeleteDialog } from './products-delete-dialog'
 import { ProductsViewQRDialog } from './products-qr-dialog'
 import { ScanQRDialog } from './products-scan-qr-dialog'
+import { ProductsUpdateDialog } from './products-update-dialog'
 import { ProductsViewDialog } from './products-view-dialog'
 
-interface Props {
-  refetchProducts: () => void
-}
+export function ProductsDialogs() {
+  const {
+    open,
+    setOpen,
+    currentRow,
+    setCurrentRow,
+  } = useProducts()
 
-export function ProductsDialogs({ refetchProducts }: Props) {
-  const [fromQrCodePopup, setFromQrCodePopup] = useState(false)
-
-  const { open, setOpen, currentRow, setCurrentRow } = useProducts()
+  const handleClose = () => {
+    setCurrentRow(null)
+    setOpen(null)
+  }
 
   return (
     <>
       <ScanQRDialog
         key='scan-qr'
         open={open === 'scan-qr'}
-        setOpen={setOpen}
-        onOpenChange={() => {
-          setOpen('scan-qr')
-        }}
-        setFromQrCodePopup={setFromQrCodePopup}
-        setCurrentRow={setCurrentRow}
+        onOpenChange={(v) => !v && handleClose()}
       />
-      <ProductsMutateDialog
+      <ProductsCreateDialog
         key='product-create'
         open={open === 'create'}
-        onOpenChange={() => setOpen('create')}
-        refetchProducts={refetchProducts}
-        setOpen={setOpen}
-        setFromQrCodePopup={setFromQrCodePopup}
-        fromQrCodePopup={fromQrCodePopup}
+        onOpenChange={(v) => !v && handleClose()}
       />
 
       {currentRow && (
@@ -42,55 +37,29 @@ export function ProductsDialogs({ refetchProducts }: Props) {
           <ProductsViewDialog
             key={`product-view-${currentRow.id}`}
             open={open === 'view'}
-            onOpenChange={() => {
-              setOpen('view')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
+            onOpenChange={(v) => !v && handleClose()}
             currentRow={currentRow}
           />
 
-          <ProductsMutateDialog
+          <ProductsUpdateDialog
             key={`product-update-${currentRow.id}`}
             open={open === 'update'}
-            onOpenChange={() => {
-              setOpen('update')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
-            refetchProducts={refetchProducts}
-            setFromQrCodePopup={setFromQrCodePopup}
-            fromQrCodePopup={fromQrCodePopup}
+            onOpenChange={(v) => !v && handleClose()}
+            currentRow={currentRow}
           />
 
           <ProductsViewQRDialog
-            key={`product-viewqr-${currentRow.id}`}
-            open={open === 'viewqr'}
-            onOpenChange={() => {
-              setOpen('viewqr')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
+            key={`product-view-qr-${currentRow.id}`}
+            open={open === 'view-qr'}
+            onOpenChange={(v) => !v && handleClose()}
             currentRow={currentRow}
           />
 
-          <ProductDeleteDialog
-            key='product-delete'
+          <ProductsDeleteDialog
+            key={`product-delete-${currentRow.id}`}
             open={open === 'delete'}
-            onOpenChange={() => {
-              setOpen('delete')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
+            onOpenChange={(v) => !v && handleClose()}
             currentRow={currentRow}
-            refetchProducts={refetchProducts}
-            setOpen={setOpen}
-            setFromQrCodePopup={setFromQrCodePopup}
-            fromQrCodePopup={fromQrCodePopup}
           />
         </>
       )}

@@ -1,6 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Scanner } from '@yudiel/react-qr-scanner'
+import { Loader } from 'lucide-react'
+import { toast } from 'sonner'
+import { productCreate } from '@/api/v1/product/create'
+import { productDelete } from '@/api/v1/product/delete'
 import { productGet } from '@/api/v1/product/get'
+import { productUpdate } from '@/api/v1/product/update'
 import { delay } from '@/lib/delay'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,40 +21,84 @@ import {
   DialogClose,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useProducts } from '@/features/products/context/products-context'
 import {
   type Product,
   productSchemaBase,
   productSchema,
 } from '@/features/products/data/schema'
 import { decompressProduct } from '@/features/products/lib/compression'
+import { MutateForm } from './mutate-form'
 
 interface Props {
   open: boolean
-  setOpen: (popup: string) => void
   onOpenChange: (open: boolean) => void
-  setFromQrCodePopup: (fromQrCodePopup: boolean) => void
 }
 
-export function ScanQRDialog({
-  open,
-  onOpenChange,
-  setFromQrCodePopup,
-}: Props) {
+export function ScanQRDialog({ open, onOpenChange }: Props) {
   const [error, setError] = useState<string | null>(null)
   const [product, setProduct] = useState<Product | null>(null)
   const [productFound, setProductFound] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showScanner, setShowScanner] = useState<boolean>(true)
-  const [fromActions, setFromActions] = useState<boolean>(false)
 
-  const { setOpen, setCurrentRow } = useProducts()
+  const queryClient = useQueryClient()
+
+  const form = useForm({
+    resolver: zodResolver(productSchemaBase),
+    defaultValues: product || {},
+  })
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Product) => {
+      await delay(200)
+      return productCreate(data)
+    },
+    onSuccess: () => {
+      toast.success('Продукт создан')
+      queryClient.invalidateQueries({ queryKey: ['productsGet'] })
+      resetState()
+      onOpenChange(false)
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Product) => {
+      await delay(200)
+      return productUpdate(product!.id, data)
+    },
+    onSuccess: () => {
+      toast.success('Продукт обновлен')
+      queryClient.invalidateQueries({ queryKey: ['productsGet'] })
+      resetState()
+      onOpenChange(false)
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      await delay(200)
+      await productDelete(product!.id)
+    },
+    onSuccess: () => {
+      toast.success('Продукт удалён')
+      queryClient.invalidateQueries({ queryKey: ['productsGet'] })
+      resetState()
+      onOpenChange(false)
+    },
+  })
+
+  useEffect(() => {
+    if (open && product) {
+      setShowScanner(false)
+      form.reset(product)
+    }
+  }, [open, product, form])
 
   const handleScan = async (result: any) => {
     if (result?.[0]?.rawValue) {
       try {
         setIsLoading(true)
-        await delay(500)
+        await delay(250)
 
         const decompressedProduct = decompressProduct(result[0].rawValue)
 
@@ -55,71 +107,57 @@ export function ScanQRDialog({
         )
 
         if (matchedProducts.length === 0) {
-          setProduct(productSchemaBase.parse(decompressedProduct))
+          const newProduct = productSchemaBase.parse(decompressedProduct)
+          setProduct(newProduct)
           setProductFound(false)
+          console.log(productFound)
+          form.reset(newProduct)
         } else {
-          setProduct(productSchema.parse(matchedProducts[0]))
+          const existingProduct = productSchema.parse(matchedProducts[0])
+          setProduct(existingProduct)
           setProductFound(true)
+          form.reset(existingProduct)
         }
 
         setError(null)
         setShowScanner(false)
         setIsLoading(false)
-      } catch (e) {
-        console.error(e)
+      } catch {
         setError('Ошибка при обработке QR-кода')
         setIsLoading(false)
       }
     }
   }
 
-  const handleEdit = () => {
-    if (product) {
-      setFromActions(true)
-      setCurrentRow(product)
-      setOpen('update')
-      setFromQrCodePopup(true)
-    }
-  }
-
   const handleDelete = () => {
     if (product) {
-      setFromActions(true)
-      setCurrentRow(product)
-      setOpen('delete')
-      setFromQrCodePopup(true)
-    }
-  }
-
-  const handleCreate = () => {
-    if (product) {
-      setFromActions(true)
-      setCurrentRow(product)
-      setOpen('create')
-      setFromQrCodePopup(true)
+      deleteMutation.mutate()
     }
   }
 
   const resetState = () => {
     setError(null)
-    setProduct(null)
     setProductFound(null)
     setIsLoading(false)
     setShowScanner(true)
-    setFromActions(false)
-    if (!fromActions) {
-      setFromQrCodePopup(false)
-    }
+    setProduct(null)
+    form.reset({})
   }
+
+  const onSubmit = form.handleSubmit((data) => {
+    if (productFound) {
+      updateMutation.mutate(data as Product)
+    } else {
+      createMutation.mutate(data as Product)
+    }
+  })
 
   return (
     <Dialog
       open={open}
       onOpenChange={(v) => {
         onOpenChange(v)
-        if (!v) {
-          resetState()
-        }
+        if (!v) resetState()
       }}
     >
       <DialogContent className='gap-2 sm:max-w-md'>
@@ -128,7 +166,9 @@ export function ScanQRDialog({
           <DialogDescription>
             {showScanner
               ? 'Наведите камеру на валидный qr-код'
-              : 'Информация о продукте'}
+              : productFound
+                ? 'Редактировать продукт'
+                : 'Создать новый продукт'}
           </DialogDescription>
         </DialogHeader>
 
@@ -136,8 +176,7 @@ export function ScanQRDialog({
           {open && !isLoading && showScanner && (
             <Scanner
               onScan={handleScan}
-              onError={(err) => {
-                console.error('QR scanning error:', err)
+              onError={() => {
                 setError('Камера недоступна')
               }}
               constraints={{
@@ -165,51 +204,78 @@ export function ScanQRDialog({
         )}
 
         {product && !showScanner && (
-          <ScrollArea className='h-[200px] w-full rounded-md border p-4'>
-            <h3 className='mb-2 font-semibold'>
-              {productFound ? 'Продукт найден' : 'Продукт не найден'}
-            </h3>
-            <pre className='text-sm'>{JSON.stringify(product, null, 2)}</pre>
+          <ScrollArea className='h-[26.25rem] w-full pr-4 -mr-4 py-1'>
+            <MutateForm
+              form={form}
+              formId='products-mutate-from-qr'
+              onSubmit={onSubmit}
+            />
           </ScrollArea>
         )}
 
         <DialogFooter className='flex flex-wrap gap-2 sm:gap-4'>
-          <DialogClose asChild>
-            <Button
-              variant='outline'
-              disabled={isLoading}
-              className='flex-1 sm:flex-none'
-            >
-              Закрыть
-            </Button>
-          </DialogClose>
-          {product && productFound && (
-            <>
-              <Button onClick={handleEdit} className='flex-1 sm:flex-none'>
-                Редактировать
-              </Button>
+          {showScanner && (
+            <DialogClose asChild>
               <Button
-                onClick={handleDelete}
-                variant='destructive'
+                variant='outline'
+                disabled={isLoading}
                 className='flex-1 sm:flex-none'
               >
-                Удалить
+                Закрыть
+              </Button>
+            </DialogClose>
+          )}
+          {product && !showScanner && (
+            <>
+              <Button
+                onClick={resetState}
+                variant='outline'
+                className='flex-1 sm:flex-none'
+                disabled={
+                  createMutation.isPending ||
+                  updateMutation.isPending ||
+                  deleteMutation.isPending
+                }
+              >
+                Сканировать снова
+              </Button>
+              {productFound && (
+                <Button
+                  onClick={handleDelete}
+                  variant='destructive'
+                  className='flex-1 sm:flex-none'
+                  disabled={
+                    createMutation.isPending ||
+                    updateMutation.isPending ||
+                    deleteMutation.isPending
+                  }
+                >
+                  {deleteMutation.isPending ? (
+                    <Loader className='animate-spin' />
+                  ) : (
+                    'Удалить'
+                  )}
+                </Button>
+              )}
+              <Button
+                type='submit'
+                onClick={onSubmit}
+                className='flex-1 sm:flex-none'
+                disabled={
+                  createMutation.isPending ||
+                  updateMutation.isPending ||
+                  deleteMutation.isPending
+                }
+              >
+                {createMutation.isPending || updateMutation.isPending ? (
+                  <Loader className='animate-spin' />
+                ) : productFound ? (
+                  'Обновить'
+                ) : (
+                  'Создать'
+                )}
               </Button>
             </>
-          )}
-          {product && !productFound && (
-            <Button onClick={handleCreate} className='flex-1 sm:flex-none'>
-              Создать
-            </Button>
-          )}
-          {product && (
-            <Button
-              onClick={resetState}
-              variant='outline'
-              className='flex-1 sm:flex-none'
-            >
-              Сканировать снова
-            </Button>
           )}
         </DialogFooter>
       </DialogContent>

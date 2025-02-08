@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { productDelete } from '@/api/v1/product/delete'
 import { delay } from '@/lib/delay'
@@ -8,62 +8,40 @@ import { Product } from '../data/schema'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  setOpen: (popup: string) => void
   currentRow: Product
-  refetchProducts: () => void
-  setFromQrCodePopup: (fromQrCodePopup: boolean) => void
-  fromQrCodePopup: boolean
 }
 
-export function ProductDeleteDialog({
-  currentRow,
+export function ProductsDeleteDialog({
   open,
-  setOpen,
   onOpenChange,
-  refetchProducts,
-  setFromQrCodePopup,
-  fromQrCodePopup,
+  currentRow,
 }: Props) {
-  const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
 
-  const handleConfirm = async () => {
-    setIsLoading(true)
-    await delay(200)
-    try {
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      await delay(200)
       await productDelete(currentRow.id)
+    },
+    onSuccess: () => {
       toast.success('Продукт удалён')
-      refetchProducts()
-    } catch (error) {
-      console.log(error)
-      toast.error('Ошибка при удалении продукта')
-    } finally {
-      setIsLoading(false)
+      queryClient.invalidateQueries(['productsGet'])
       onOpenChange(false)
-    }
-  }
+    },
+  })
 
   return (
     <ConfirmDialog
       key='product-delete'
       destructive
       open={open}
-      onOpenChange={(v) => {
-        onOpenChange(v)
-        setIsLoading(false)
-        if (fromQrCodePopup) {
-          setOpen('scan-qr')
-        }
-        if (fromQrCodePopup && !v) {
-          setFromQrCodePopup(false)
-        }
-      }}
+      onOpenChange={onOpenChange}
       handleConfirm={() => {
-        setFromQrCodePopup(false)
-        handleConfirm()
+        deleteMutation.mutate()
       }}
-      isLoading={isLoading}
+      isLoading={deleteMutation.isPending}
       className='max-w-md'
-      title={`Удалить продукт: ${currentRow?.name} ?`}
+      title={`Удалить продукт?`}
       desc={
         <>
           Вы хотите удалить продукт <strong>{currentRow?.name}</strong>. <br />

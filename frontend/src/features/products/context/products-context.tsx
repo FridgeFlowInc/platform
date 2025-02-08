@@ -4,7 +4,7 @@ import { Product } from '../data/schema'
 
 type ProductsDialogType =
   | 'view'
-  | 'viewqr'
+  | 'view-qr'
   | 'create'
   | 'update'
   | 'delete'
@@ -26,8 +26,16 @@ interface Props {
 export default function ProductsProvider({ children }: Props) {
   const [open, setOpen] = useDialogState<ProductsDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Product | null>(null)
+
   return (
-    <ProductsContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <ProductsContext
+      value={{
+        open,
+        setOpen,
+        currentRow,
+        setCurrentRow,
+      }}
+    >
       {children}
     </ProductsContext>
   )
