@@ -61,10 +61,10 @@ export function DataTableRowActions<TData>({
         <DropdownMenuItem
           onClick={() => {
             setCurrentRow(product)
-            setOpen('viewqr')
+            setOpen('view-qr')
           }}
         >
-          QR код
+          QR Код
           <DropdownMenuShortcut>
             <IconQrcode size={16} />
           </DropdownMenuShortcut>

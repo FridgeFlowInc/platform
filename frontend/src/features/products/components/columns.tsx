@@ -1,6 +1,6 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
-import { Product } from '../data/schema'
+import type { Product } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -11,7 +11,9 @@ export const columns: ColumnDef<Product>[] = [
       <DataTableColumnHeader column={column} title='Продукт' />
     ),
     cell: ({ row }) => (
-      <div className='flex w-[100px]'>{row.getValue('name')}</div>
+      <div className='w-full max-w-[200px] truncate font-medium'>
+        {row.getValue('name')}
+      </div>
     ),
     enableSorting: true,
     enableHiding: false,
@@ -57,7 +59,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return (
         <div className='flex space-x-2'>
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+          <span className='max-w-[150px] truncate font-medium sm:max-w-[200px]'>
             {row.getValue('category')}
           </span>
         </div>
@@ -74,7 +76,9 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return (
         <div className='flex items-center'>
-          <span>{row.getValue('manufacturer')}</span>
+          <span className='max-w-[150px] truncate sm:max-w-[200px]'>
+            {row.getValue('manufacturer')}
+          </span>
         </div>
       )
     },
