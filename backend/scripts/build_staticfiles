@@ -4,4 +4,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 uv sync --no-dev
 
+source $HOME/.local/bin/env
+
 uv run python manage.py collectstatic
