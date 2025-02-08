@@ -53,6 +53,7 @@ export function ProductsCreateDialog({ open, onOpenChange }: Props) {
       toast.success('Продукт создан')
       queryClient.invalidateQueries(['productsGet'])
       onOpenChange(false)
+      form.reset()
     },
   })
 
