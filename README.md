@@ -18,4 +18,4 @@ Coming soon
 
 ## Video
 
-Coming soon
+[rutube.ru/video/private/7b14ba3dbb1b2f3358831f768d85f1c0](https://rutube.ru/video/private/7b14ba3dbb1b2f3358831f768d85f1c0/?p=vZvXGj8hmCE0Oi8nuB2Nzg)
