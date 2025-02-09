@@ -12,8 +12,6 @@ interface AuthState {
     setAccessToken: (accessToken: string) => void
     resetAccessToken: () => void
     checkAuthentication: () => void
-    preLogOut: () => void
-    logOut: () => void
   }
 }
 
@@ -73,28 +71,6 @@ export const useAuthStore = create<AuthState>((set) => {
             },
           }))
         }
-      },
-      preLogOut: () => {
-        set((store) => ({
-          ...store,
-          auth: {
-            ...store.auth,
-            isAuthenticated: false,
-            checkedAuthentication: false,
-            accessToken: '',
-          },
-        }))
-      },
-      logOut: () => {
-        set((store) => ({
-          ...store,
-          auth: {
-            ...store.auth,
-            isAuthenticated: false,
-            checkedAuthentication: true,
-            accessToken: '',
-          },
-        }))
       },
     },
   }

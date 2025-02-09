@@ -44,10 +44,7 @@ const queryClient = new QueryClient({
             case 401:
               toast.warning('Войдите в аккаунт')
               useAuthStore.getState().auth.resetAccessToken()
-              useAuthStore.getState().auth.preLogOut()
-              toast.success('Вы успешно вышли')
-              router.navigate({ to: '/sign-in' })
-              useAuthStore.getState().auth.logOut()
+              location.reload()
               break
             case 404:
               toast.warning('Элемент не найден')
