@@ -40,7 +40,7 @@ class NotificationOut(Schema):
 
 
 class SearchProductIn(ModelSchema):
-    quantity: str | int | None
+    quantity: str | int | None = None
 
     class Meta:
         model = Product
