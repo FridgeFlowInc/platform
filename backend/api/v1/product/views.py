@@ -134,7 +134,7 @@ def get_products_stats(
 
 @router.post("/search_by_qr", response=list[schemas.ProductOut])
 def search_product_by_qr(
-    request: HttpRequest, product: schemas.ProductIn
+    request: HttpRequest, product: schemas.SearchProductIn
 ) -> tuple[int, BaseManager[Product]]:
     return status.OK, Product.objects.filter(**product.dict())
 

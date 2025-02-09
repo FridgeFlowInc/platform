@@ -37,3 +37,16 @@ class NotificationOut(Schema):
     level: str
     type: str
     timestamp: datetime.datetime
+
+
+class SearchProductIn(ModelSchema):
+    quantity: str | int | None
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+        exclude: ClassVar[list[str]] = [
+            Product.id.field.name,
+            Product.timestamp.field.name,
+            Product.quantity.field.name,
+        ]

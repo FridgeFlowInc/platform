@@ -110,7 +110,6 @@ export function ScanQRDialog({ open, onOpenChange }: Props) {
           const newProduct = productSchemaBase.parse(decompressedProduct)
           setProduct(newProduct)
           setProductFound(false)
-          console.log(productFound)
           form.reset(newProduct)
         } else {
           const existingProduct = productSchema.parse(matchedProducts[0])
