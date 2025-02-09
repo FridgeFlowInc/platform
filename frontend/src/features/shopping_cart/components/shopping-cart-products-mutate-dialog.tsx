@@ -110,7 +110,7 @@ export function ShoppingCartProductsMutateDialog({
                       <Input placeholder='Название' {...field} />
                     </FormControl>
                     <FormDescription>
-                      Название продукта (макс. 200 символов).
+                      Название продукта (макс. 200 символов)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +130,7 @@ export function ShoppingCartProductsMutateDialog({
                       />
                     </FormControl>
                     <FormDescription>
-                      Введите количество продукта.
+                      Количество продукта
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -145,7 +145,7 @@ export function ShoppingCartProductsMutateDialog({
                       <Input placeholder='Единицы измерения' {...field} />
                     </FormControl>
                     <FormDescription>
-                      Введите единицы измерения (макс. 50 символов).
+                      Единицы измерения (макс. 50 символов)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

@@ -36,7 +36,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input placeholder='Название' {...field} />
               </FormControl>
               <FormDescription>
-                Название продукта (макс. 200 символов).
+                Название продукта (макс. 200 символов)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -52,7 +52,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input placeholder='Категория' {...field} />
               </FormControl>
               <FormDescription>
-                Введите категорию продукта (макс. 200 символов).
+                Категория продукта (макс. 200 символов)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -68,7 +68,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input placeholder='Производитель' {...field} />
               </FormControl>
               <FormDescription>
-                Введите производителя (макс. 200 символов).
+                Производитель (макс. 200 символов)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -88,7 +88,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                   {...field}
                 />
               </FormControl>
-              <FormDescription>Введите количество продукта.</FormDescription>
+              <FormDescription>Количество продукта</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -103,7 +103,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input placeholder='Ед. измерения' {...field} />
               </FormControl>
               <FormDescription>
-                Введите единицы измерения (макс. 50 символов).
+                Единицы измерения (макс. 50 символов)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -124,7 +124,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 />
               </FormControl>
               <FormDescription>
-                Введите пищевую ценность продукта [ккал/100г] (необязательно).
+                Пищевая ценность продукта [ккал/100г] (необязательно)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -145,7 +145,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 />
               </FormControl>
               <FormDescription>
-                Введите массу нетто продукта [граммы] (необязательно).
+                Масса нетто продукта [граммы] (необязательно)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -166,7 +166,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 />
               </FormControl>
               <FormDescription>
-                Введите массу брутто продукта [граммы] (необязательно).
+                Масса брутто продукта [граммы] (необязательно)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -182,7 +182,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input type='date' {...field} />
               </FormControl>
               <FormDescription>
-                Введите дату производства [MM-DD-YYYY].
+                Дата производства [MM-DD-YYYY]
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -198,7 +198,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Input type='date' {...field} />
               </FormControl>
               <FormDescription>
-                Введите дату истечения срока годности [MM-DD-YYYY].
+                Дата истечения срока годности [MM-DD-YYYY]
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -214,7 +214,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Textarea placeholder='Заметки' {...field} />
               </FormControl>
               <FormDescription>
-                Введите дополнительные заметки (макс. 1000 символов).
+                Дополнительные заметки (макс. 1000 символов, необязательно)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -230,7 +230,7 @@ export const MutateForm: React.FC<MutateFormProps> = ({
                 <Textarea placeholder='Аллергены' {...field} />
               </FormControl>
               <FormDescription>
-                Введите информацию об аллергенах (макс. 1000 символов).
+                Информация об аллергенах (макс. 1000 символов, необязательно)
               </FormDescription>
               <FormMessage />
             </FormItem>

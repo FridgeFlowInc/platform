@@ -26,7 +26,7 @@ export function ProductsViewDialog({ open, onOpenChange, currentRow }: Props) {
           <DialogDescription>Детали текущего продукта</DialogDescription>
         </DialogHeader>
         <ScrollArea className='h-[26.25rem] w-full pr-4 -mr-4 py-1'>
-          <div className='space-y-4'>
+          <div className='space-y-4 p-1'>
             <div>
               <h4 className='font-bold'>Название</h4>
               <p>{currentRow.name}</p>
