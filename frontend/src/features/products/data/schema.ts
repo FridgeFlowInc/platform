@@ -16,7 +16,7 @@ export const productSchemaBase = z.object({
   quantity: z.union([
     z.string({ message: 'Обязательное поле' }).min(1, 'Обязательное поле'),
     z.number({ message: 'Введите число' }),
-  ]),
+  ]).default(1),
   unit: z
     .string({ message: 'Обязательное поле' })
     .max(50, 'Не больше 200 символов')
