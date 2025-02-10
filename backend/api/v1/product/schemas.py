@@ -40,8 +40,6 @@ class NotificationOut(Schema):
 
 
 class SearchProductIn(ModelSchema):
-    quantity: str | int | None = None
-
     class Meta:
         model = Product
         fields = "__all__"
