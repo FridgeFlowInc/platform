@@ -5,13 +5,15 @@ const stringMap: Record<string, number> = {
   name: 1,
   category: 2,
   manufacturer: 3,
-  nutritional_value: 4,
-  total_net_weight: 5,
-  total_gross_weight: 6,
-  manufacture_date: 7,
-  expiration_date: 8,
-  notes: 9,
-  allergens: 10,
+  quantity: 4,
+  unit: 5,
+  nutritional_value: 6,
+  total_net_weight: 7,
+  total_gross_weight: 8,
+  manufacture_date: 9,
+  expiration_date: 10,
+  notes: 11,
+  allergens: 12,
 }
 
 export function compressProduct(product: Omit<Product, 'id'>): string {
@@ -49,7 +51,11 @@ export function decompressProduct(
 
   const reverseStringMap = Object.entries(stringMap).reduce(
     (acc, [key, value]) => {
-      acc[value] = key
+      if (key != "quantity") {
+        acc[value] = key
+        return acc
+      }
+      acc[value] = null
       return acc
     },
     {} as Record<number, string>
