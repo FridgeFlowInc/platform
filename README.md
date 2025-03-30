@@ -18,7 +18,7 @@ Coming soon
 
 ## Live demonstration
 
-[fridgeflow.itqdev.ru](https://fridgeflow.itqdev.ru/)
+[fridgeflow.itqdev.xyz](https://fridgeflow.itqdev.xyz/)
 
 ## Video
 
